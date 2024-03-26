@@ -1,0 +1,124 @@
+{% extends 'global/base.html' %}
+{% load static %}
+{% block 'head' %}
+<link href="{% static 'agenda/css/home.css' %}" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.gstatic.com" />
+{% endblock 'head' %}
+
+{% block 'titulo' %}Home{% endblock 'titulo' %}
+
+{% block 'conteudo' %}
+
+<section class="vh-100">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container py-2 h-100 ">
+            <div class="collapse navbar-collapse d-flex justify-content-around" id="navbarNav">
+                <ul class="navbar-nav ">
+                    <li class="nav-item active">
+                        <a class="nav-link larger-text " href="#">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link larger-text " href="#">Agenda</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link larger-text font-weight-bold" href="#">Perfil</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+    </nav>
+
+    <section class="vh-100">
+        <div class="container py-5 h-100">
+            <div class="d-flex justify-content-center flex-wrap">
+
+                <div class="card m-3" style="width: 20rem;">
+                    <img class="card-img-top" src="http://source.unsplash.com/random/180x100?r=1"
+                        alt="Imagem de capa do card">
+                    <div class="card-body">
+                        <h5 class="card-title">Título do card</h5>
+                        <p class="card-text">Um exemplo de texto rápido para construir o título do card e fazer
+                            preencher o
+                            conteúdo
+                            do
+                            card.</p>
+                    </div>
+
+                    <div class="card-body">
+                        <a href="#" class="card-link">Link do card</a>
+                    </div>
+                </div>
+
+                <div class="card  m-3" style="width: 20rem;">
+                    <img class="card-img-top" src="http://source.unsplash.com/random/180x100?r=2"
+                        alt="Imagem de capa do card">
+                    <div class="card-body">
+                        <h5 class="card-title">Título do card</h5>
+                        <p class="card-text">Um exemplo de texto rápido para construir o título do card e fazer
+                            preencher o
+                            conteúdo
+                            do
+                            card.</p>
+                    </div>
+
+                    <div class="card-body">
+                        <a href="#" class="card-link">Link do card</a>
+                    </div>
+                </div>
+
+                <div class="card m-3" style="width: 20rem;">
+                    <img class="card-img-top" src="http://source.unsplash.com/random/180x100?r=3"
+                        alt="Imagem de capa do card">
+                    <div class="card-body">
+                        <h5 class="card-title">Título do card</h5>
+                        <p class="card-text">Um exemplo de texto rápido para construir o título do card e fazer
+                            preencher o
+                            conteúdo
+                            do
+                            card.</p>
+                    </div>
+
+                    <div class="card-body">
+                        <a href="#" class="card-link">Link do card</a>
+                    </div>
+                </div>
+
+
+                <div class="card m-3" style="width: 20rem;">
+                    <img class="card-img-top" src="http://source.unsplash.com/random/180x100?r=4"
+                        alt="Imagem de capa do card">
+                    <div class="card-body">
+                        <h5 class="card-title">Título do card</h5>
+                        <p class="card-text">Um exemplo de texto rápido para construir o título do card e fazer
+                            preencher o
+                            conteúdo
+                            do
+                            card.</p>
+                    </div>
+
+                    <div class="card-body">
+                        <a href="#" class="card-link">Link do card</a>
+                    </div>
+                </div>
+
+                <div class="card m-3" style="width: 20rem;">
+                    <img class="card-img-top" src="http://source.unsplash.com/random/180x100?r=5"
+                        alt="Imagem de capa do card">
+                    <div class="card-body">
+                        <h5 class="card-title">Título do card</h5>
+                        <p class="card-text">Um exemplo de texto rápido para construir o título do card e fazer
+                            preencher o
+                            conteúdo
+                            do
+                            card.</p>
+                    </div>
+
+                    <div class="card-body">
+                        <a href="#" class="card-link">Link do card</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    {% endblock 'conteudo' %}

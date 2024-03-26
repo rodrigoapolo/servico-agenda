@@ -1,0 +1,116 @@
+{% extends 'global/base.html' %}
+{% load static %}
+{% block 'head' %}
+<link href="{% static 'agenda/css/login.css' %}" rel="stylesheet">
+{% endblock 'head' %}
+
+{% block 'titulo' %}Login{% endblock 'titulo' %}
+
+{% block 'conteudo' %}
+
+<section class="vh-100">
+    <div class="container py-5 h-100">
+        <div class="row d-flex align-items-center justify-content-center h-100">
+            <div class="col-md-8 col-lg-7 col-xl-6">
+                <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-login-form/draw2.svg"
+                    class="img-fluid" alt="Phone image">
+            </div>
+            <div class="col-md-7 col-lg-5 col-xl-5 offset-xl-1">
+                <h1 class="text-center" >Registra-se</h1>
+                <form action="{% url 'agenda:create_cliente' %}" method="POST">
+                    {% csrf_token %}
+
+                    <div class="form-outline mb-4">
+                        <label for="nome">Nome</label>
+                        {%if usernameErros %}
+                        <input type="text"
+                            class="form-control is-invalid form-control-lg shadow p-4 mb-2 bg-white rounded"
+                            name="username" id="nome" value="{{ username }}" placeholder="Nome" required>
+                        {% for error in usernameErros %}
+                        <div class="invalid-feedback m-0">
+                            <li>{{ error }}</li>
+                        </div>
+                        {% endfor %}
+                        {% else %}
+                        <input type="text" class="form-control form-control-lg shadow p-4 mb-5 bg-white rounded"
+                            name="username" id="nome" value="{{ username }}" placeholder="Nome" required>
+                        {% endif %}
+                    </div>
+                    <!-- Email input -->
+                    <div class="form-outline mb-4">
+                        <label for="email">Email</label>
+                        {%if emailErros %}
+                        <input type="text"
+                            class="form-control is-invalid form-control-lg shadow p-4 mb-2 bg-white rounded"
+                            name="email" id="email" value="{{ email }}" placeholder="Email" required>
+                        {% for error in emailErros %}
+                        <div class="invalid-feedback m-0">
+                            <li>{{ error }}</li>
+                        </div>
+                        {% endfor %}
+                        {% else %}
+                        <input type="text" class="form-control form-control-lg shadow p-4 mb-5 bg-white rounded"
+                            name="email" id="email" value="{{ email }}" placeholder="Email" required>
+                        {% endif %}
+                    </div>
+
+                    <!-- Password input -->
+                    <div class="form-outline mb-2">
+                        <label for="senha">Senha</label>
+                        {%if passwordErros %}
+                        <input type="password"
+                            class="form-control is-invalid form-control-lg shadow p-4 mb-2 bg-white rounded" id="senha"
+                            name="password" placeholder="Senha" required>
+                        {% for error in passwordErros %}
+                        <div class="invalid-feedback">
+                            <li>{{ error }}</li>
+                        </div>
+                        {% endfor %}
+                        {% else %}
+                        <input type="password" class="form-control form-control-lg shadow p-4 mb-5 bg-white rounded"
+                            id="senha" name="password" placeholder="Senha" required>
+                        {% endif %}
+                    </div>
+
+                    <div class="form-outline mb-2">
+                        <label for="senha">Confirmar senha</label>
+                        {%if passwordErros %}
+                        <input type="password"
+                            class="form-control is-invalid form-control-lg shadow p-4 mb-2 bg-white rounded" id="senha"
+                            name="confirmar_senha" placeholder="Confirmar senha" required>
+                        {% for error in passwordErros %}
+                        <div class="invalid-feedback">
+                            <li>{{ error }}</li>
+                        </div>
+                        {% endfor %}
+                        {% else %}
+                        <input type="password" class="form-control form-control-lg shadow p-4 mb-5 bg-white rounded"
+                            id="confirmar_senha" name="confirmar_senha" placeholder="Confirmar Senha" required>
+                        {% endif %}
+                    </div>
+
+                    {% if form.non_field_errors %}
+                    <hr class="mt-20">
+                    <div class="text-danger text-center mt-20" style="font-weight: bold;">
+                        {{ form.non_field_errors }}
+                    </div>
+                    {% endif %}
+
+                    <div class="d-flex justify-content-end mb-4 ">
+                        <a href="{% url 'agenda:login' %}">login</a>
+                    </div>
+
+                    <div class="d-flex justify-content-center ">
+                        <button type="submit" class="p-3 btn btn-primary btn-lg">Registra-se</button>
+                    </div>
+
+                </form>
+
+
+            </div>
+        </div>
+    </div>
+
+</section>
+
+{% endblock 'conteudo' %}

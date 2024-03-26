@@ -1,0 +1,80 @@
+{% extends 'global/base.html' %}
+{% load static %}
+{% block 'head' %}
+<link href="{% static 'agenda/css/login.css' %}" rel="stylesheet">
+{% endblock 'head' %}
+
+{% block 'titulo' %}Login{% endblock 'titulo' %}
+
+{% block 'conteudo' %}
+
+<section class="vh-100">
+  <div class="container py-5 h-100">
+    <div class="row d-flex align-items-center justify-content-center h-100">
+      <div class="col-md-8 col-lg-7 col-xl-6">
+        <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-login-form/draw2.svg" class="img-fluid"
+          alt="Phone image">
+      </div>
+      <div class="col-md-7 col-lg-5 col-xl-5 offset-xl-1">
+        <h1 class="text-center">Login</h1>
+        <form action="{% url 'agenda:login' %}" method="POST">
+          {% csrf_token %}
+          <!-- Email input -->
+          <div class="form-outline mb-4">
+            <label for="email">Email</label>
+            {%if form.username.errors %}
+            <input type="text" class="form-control is-invalid form-control-lg shadow p-4 mb-2 bg-white rounded"
+              name="{{ form.username.html_name }}" id="email" placeholder="Email" required>
+            {% for error in form.username.errors %}
+            <div class="invalid-feedback m-0">
+              <li>{{ error }}</li>
+            </div>
+            {% endfor %}
+            {% else %}
+            <input type="text" class="form-control form-control-lg shadow p-4 mb-5 bg-white rounded"
+              name="{{ form.username.html_name }}" id="email" placeholder="Email" required>
+              {% endif %}
+          </div>
+
+          <!-- Password input -->
+          <div class="form-outline mb-2">
+            <label for="senha">Senha</label>
+            {%if form.password.errors %}
+            <input type="password" class="form-control is-invalid form-control-lg shadow p-4 mb-2 bg-white rounded"
+              id="senha" name="{{ form.password.html_name }}" placeholder="Senha" required>
+            {% for error in form.password.errors %}
+            <div class="invalid-feedback">
+              <li>{{ error }}</li>
+            </div>
+            {% endfor %}
+            {% else %}
+            <input type="password" class="form-control form-control-lg shadow p-4 mb-5 bg-white rounded" id="senha"
+              name="{{ form.password.html_name }}" placeholder="Senha" required>
+            {% endif %}
+          </div>
+
+          {% if form.non_field_errors %}
+          <hr class="mt-20">
+          <div class="text-danger text-center mt-20" style="font-weight: bold;">
+            {{ form.non_field_errors }}
+          </div>
+          {% endif %}
+
+          <div class="d-flex justify-content-end mb-4 ">
+            <a href="{% url 'agenda:create_cliente' %}">Registra-se</a>
+          </div>
+
+          <div class="d-flex justify-content-center ">
+            <button type="submit" class="p-3 btn btn-primary btn-lg">Sign in</button>
+          </div>
+
+        </form>
+
+
+      </div>
+    </div>
+  </div>
+
+</section>
+
+{% endblock 'conteudo' %}
