@@ -8,27 +8,8 @@
 {% block 'titulo' %}Home{% endblock 'titulo' %}
 
 {% block 'conteudo' %}
-
+{% include 'global/menu.html' %}
 <section class="vh-100">
-    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
-        <div class="container py-2 h-100 ">
-            <div class="collapse navbar-collapse d-flex justify-content-around" id="navbarNav">
-                <ul class="navbar-nav ">
-                    <li class="nav-item active">
-                        <a class="nav-link larger-text " href="#">Home</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link larger-text " href="#">Agenda</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link larger-text font-weight-bold" href="#">Perfil</a>
-                    </li>
-                </ul>
-            </div>
-        </div>
-
-    </nav>
-
     <section class="vh-100">
         <div class="container py-5 h-100">
             <div class="d-flex justify-content-center flex-wrap">

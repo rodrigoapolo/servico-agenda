@@ -1,0 +1,148 @@
+{% extends 'global/base.html' %}
+{% load static %}
+{% block 'head' %}
+<link href="{% static 'agenda/css/login.css' %}" rel="stylesheet">
+{% endblock 'head' %}
+
+{% block 'titulo' %}Login{% endblock 'titulo' %}
+
+{% block 'conteudo' %}
+{% include 'global/menu.html' %}
+<section class="vh-100 mt-3">
+    <div class="container h-100">
+        <h1 class="text-center">Rodrigo</h1>
+        <div class="d-flex justify-content-center pt-3">
+            <form class="w-50 p-5" action="{% url 'agenda:create_cliente' %}" method="POST">
+                {% csrf_token %}
+
+                <!-- Email input -->
+                <div class="form-outline mb-4">
+                    <label for="email">Email</label>
+                    <input type="text" class="form-control form-control-lg shadow p-4 mb-2 bg-white rounded"
+                        value="rodrigo@gmail.com" placeholder="Email" disabled>
+                </div>
+
+                <div class="form-outline mb-4">
+                    <label for="nome">Nome</label>
+                    {%if usernameErros %}
+                    <input type="text" class="form-control is-invalid form-control-lg shadow p-4 mb-2 bg-white rounded"
+                        name="username" id="nome" value="{{ username }}" placeholder="Nome" required>
+                    {% for error in usernameErros %}
+                    <div class="invalid-feedback m-0">
+                        <li>{{ error }}</li>
+                    </div>
+                    {% endfor %}
+                    {% else %}
+                    <input type="text" class="form-control form-control-lg shadow p-4 mb-5 bg-white rounded"
+                        name="username" id="nome" value="{{ username }}" placeholder="Nome" required>
+                    {% endif %}
+                </div>
+
+
+                <!-- Password input -->
+                <div class="form-outline mb-2">
+                    <label for="senha">Senha</label>
+                    {%if passwordErros %}
+                    <input type="password"
+                        class="form-control is-invalid form-control-lg shadow p-4 mb-2 bg-white rounded" id="senha"
+                        name="password" placeholder="Senha" required>
+                    {% for error in passwordErros %}
+                    <div class="invalid-feedback">
+                        <li>{{ error }}</li>
+                    </div>
+                    {% endfor %}
+                    {% else %}
+                    <input type="password" class="form-control form-control-lg shadow p-4 mb-5 bg-white rounded"
+                        id="senha" name="password" placeholder="Senha" required>
+                    {% endif %}
+                </div>
+
+                <div class="form-outline mb-2">
+                    <label for="senha">Confirmar senha</label>
+                    {%if passwordErros %}
+                    <input type="password"
+                        class="form-control is-invalid form-control-lg shadow p-4 mb-2 bg-white rounded" id="senha"
+                        name="confirmar_senha" placeholder="Confirmar senha" required>
+                    {% for error in passwordErros %}
+                    <div class="invalid-feedback">
+                        <li>{{ error }}</li>
+                    </div>
+                    {% endfor %}
+                    {% else %}
+                    <input type="password" class="form-control form-control-lg shadow p-4 mb-5 bg-white rounded"
+                        id="confirmar_senha" name="confirmar_senha" placeholder="Confirmar Senha" required>
+                    {% endif %}
+                </div>
+
+                {% if form.non_field_errors %}
+                <hr class="mt-20">
+                <div class="text-danger text-center mt-20" style="font-weight: bold;">
+                    {{ form.non_field_errors }}
+                </div>
+                {% endif %}
+
+                <div class="d-flex justify-content-center ">
+                    <button type="submit" class="p-3 btn btn-primary btn-lg">Atualizar</button>
+                </div>
+
+            </form>
+            <div class="w-50 p-5">
+                <h2>Historico Agendamento</h2>
+                <div class="card mb-3" style="max-width: 540px;">
+                    <div class="row g-0">
+                        <div class="col-md-4">
+                            <img src="..." class="img-fluid rounded-start" alt="...">
+                        </div>
+                        <div class="col-md-8">
+                            <div class="card-body">
+                                <h5 class="card-title">Card title</h5>
+                                <p class="card-text">This is a wider card with supporting text below as a natural
+                                    lead-in to additional content. This content is a little bit longer.</p>
+                                <p class="card-text"><small class="text-body-secondary">Last updated 3 mins ago</small>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card mb-3" style="max-width: 540px;">
+                    <div class="row g-0">
+                        <div class="col-md-4">
+                            <img src="..." class="img-fluid rounded-start" alt="...">
+                        </div>
+                        <div class="col-md-8">
+                            <div class="card-body">
+                                <h5 class="card-title">Card title</h5>
+                                <p class="card-text">This is a wider card with supporting text below as a natural
+                                    lead-in to additional content. This content is a little bit longer.</p>
+                                <p class="card-text"><small class="text-body-secondary">Last updated 3 mins ago</small>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card mb-3" style="max-width: 540px;">
+                    <div class="row g-0">
+                        <div class="col-md-4">
+                            <img src="..." class="img-fluid rounded-start" alt="...">
+                        </div>
+                        <div class="col-md-8">
+                            <div class="card-body">
+                                <h5 class="card-title">Card title</h5>
+                                <p class="card-text">This is a wider card with supporting text below as a natural
+                                    lead-in to additional content. This content is a little bit longer.</p>
+                                <p class="card-text"><small class="text-body-secondary">Last updated 3 mins ago</small>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="d-flex justify-content-end mb-4 ">
+                    <a href="{% url 'agenda:login' %}">Ver mais...</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</section>
+
+{% endblock 'conteudo' %}

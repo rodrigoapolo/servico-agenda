@@ -82,4 +82,7 @@ def create_cliente(request):
         
     else:
         return render(request, 'agenda/create-cliente.html')
-    
+
+
+def perfil(request):
+    return render(request, 'agenda/perfil.html')
