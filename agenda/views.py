@@ -115,3 +115,8 @@ def perfil(request):
                     
     else:
         return render(request, 'agenda/perfil.html', {'user': request.user})
+    
+    
+@login_required(login_url='agenda:login')
+def empresa(request):
+    return render(request, 'agenda/empresa.html')

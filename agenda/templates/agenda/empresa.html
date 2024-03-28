@@ -8,6 +8,125 @@
 
 {% block 'conteudo' %}
 {% include 'global/menu.html' %}
+<section class="p-0 bg-secondary-subtle">
+    <div class="container pb-3 h-100 bg-white">
+        <h1 class="text-center pt-2">Cadastra Empresa</h1>
+        <form action="{% url 'agenda:empresa' %}" method="POST" class="row g-3 w-50 m-auto p-3 shadow" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="col-md-6">
+                <label for="nome" class="form-label">Nome</label>
+                <input type="text" class="form-control is-invalid" id="nome" placeholder="Nome" required>
+            </div>
+            <div class="col-md-6">
+                <label for="cep" class="form-label">CEP</label>
+                <input type="text" class="form-control" id="cep" placeholder="CEP" required>
+            </div>
+            <div class="col-6">
+                <label for="numero" class="form-label">Numero</label>
+                <input type="text" class="form-control" id="numero" placeholder="Numero" required>
+            </div>
+            <div class="col-6">
+                <label for="complemento" class="form-label">Complemento</label>
+                <input type="text" class="form-control" id="complemento" placeholder="Complemento">
+            </div>
+            <div class="col-md-12">
+                <div class="input-group mb-3">
+                    <label class="input-group-text" for="foto">Foto</label>
+                    <input type="file" class="form-control" id="foto" required>
+                </div>
 
 
+            </div>
+
+            <div class="col-12 d-flex justify-content-center">
+                <button type="submit" class="btn btn-primary">Cadastra</button>
+            </div>
+        </form>
+    </div>
+    <div class="container pt-4 h-100 bg-white">
+        <h1 class="ms-3">Minhas Empresas</h1>
+        <div class="d-flex justify-content-center flex-wrap">
+            <div class="card mb-3">
+                <div class="row g-0">
+                    <div class="col-md-4">
+                        <img src="http://source.unsplash.com/random/315x280?r=1" class="img-fluid rounded-start" alt="...">
+                    </div>
+                    <div class="col-md-8">
+                        <div class="card-body">
+                            <h5 class="card-title">Card title</h5>
+                            <p class="card-text">This is a wider card with supporting text below as a natural lead-in to
+                                additional content. This content is a little bit longer.</p>
+                            <p class="card-text">This is a wider card with supporting text below as a natural lead-in to
+                                additional content. This content is a little bit longer.</p>
+                            <p class="card-text">This is a wider card with supporting text below as a natural lead-in to
+                                additional content. This content is a little bit longer.</p>
+                            <p class="card-text"><small class="text-body-secondary">Last updated 3 mins ago</small></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card mb-3">
+                <div class="row g-0">
+                    <div class="col-md-4">
+                        <img src="http://source.unsplash.com/random/315x280?r=2" class="img-fluid rounded-start" alt="...">
+                    </div>
+                    <div class="col-md-8">
+                        <div class="card-body">
+                            <h5 class="card-title">Card title</h5>
+                            <p class="card-text">This is a wider card with supporting text below as a natural lead-in to
+                                additional content. This content is a little bit longer.</p>
+                            <p class="card-text">This is a wider card with supporting text below as a natural lead-in to
+                                additional content. This content is a little bit longer.</p>
+                            <p class="card-text">This is a wider card with supporting text below as a natural lead-in to
+                                additional content. This content is a little bit longer.</p>
+                            <p class="card-text"><small class="text-body-secondary">Last updated 3 mins ago</small></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card mb-3">
+                <div class="row g-0">
+                    <div class="col-md-4">
+                        <img src="http://source.unsplash.com/random/315x280?r=3" class="img-fluid rounded-start" alt="...">
+                    </div>
+                    <div class="col-md-8">
+                        <div class="card-body">
+                            <h5 class="card-title">Card title</h5>
+                            <p class="card-text">This is a wider card with supporting text below as a natural lead-in to
+                                additional content. This content is a little bit longer.</p>
+                            <p class="card-text">This is a wider card with supporting text below as a natural lead-in to
+                                additional content. This content is a little bit longer.</p>
+                            <p class="card-text">This is a wider card with supporting text below as a natural lead-in to
+                                additional content. This content is a little bit longer.</p>
+                            <p class="card-text"><small class="text-body-secondary">Last updated 3 mins ago</small></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card mb-3">
+                <div class="row g-0">
+                    <div class="col-md-4">
+                        <img src="http://source.unsplash.com/random/315x280?r=4" class="img-fluid rounded-start" alt="...">
+                    </div>
+                    <div class="col-md-8">
+                        <div class="card-body">
+                            <h5 class="card-title">Card title</h5>
+                            <p class="card-text">This is a wider card with supporting text below as a natural lead-in to
+                                additional content. This content is a little bit longer.</p>
+                            <p class="card-text">This is a wider card with supporting text below as a natural lead-in to
+                                additional content. This content is a little bit longer.</p>
+                            <p class="card-text">This is a wider card with supporting text below as a natural lead-in to
+                                additional content. This content is a little bit longer.</p>
+                            <p class="card-text"><small class="text-body-secondary">Last updated 3 mins ago</small></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
 {% endblock 'conteudo' %}
