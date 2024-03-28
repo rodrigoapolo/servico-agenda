@@ -8,25 +8,27 @@
 
 {% block 'conteudo' %}
 {% include 'global/menu.html' %}
-<section class="vh-100 mt-3">
-    <div class="container h-100">
-        <h1 class="text-center">Rodrigo</h1>
+<section class="vh-100 p-0 bg-secondary-subtle">
+
+    <div class="container p-0 h-100 bg-white">
+
+        <h1 class="text-center pt-2">{{ user.username }}</h1>
         <div class="d-flex justify-content-center pt-3">
-            <form class="w-50 p-5" action="{% url 'agenda:create_cliente' %}" method="POST">
+            <form class="w-50 p-5" action="{% url 'agenda:perfil' %}" method="POST">
                 {% csrf_token %}
 
                 <!-- Email input -->
                 <div class="form-outline mb-4">
                     <label for="email">Email</label>
                     <input type="text" class="form-control form-control-lg shadow p-4 mb-2 bg-white rounded"
-                        value="rodrigo@gmail.com" placeholder="Email" disabled>
+                    name="email" value="{{ user.email }}" placeholder="Email" readonly>
                 </div>
 
                 <div class="form-outline mb-4">
                     <label for="nome">Nome</label>
                     {%if usernameErros %}
                     <input type="text" class="form-control is-invalid form-control-lg shadow p-4 mb-2 bg-white rounded"
-                        name="username" id="nome" value="{{ username }}" placeholder="Nome" required>
+                        name="username" id="nome" value="{{ username }}" placeholder="Nome">
                     {% for error in usernameErros %}
                     <div class="invalid-feedback m-0">
                         <li>{{ error }}</li>
@@ -34,7 +36,7 @@
                     {% endfor %}
                     {% else %}
                     <input type="text" class="form-control form-control-lg shadow p-4 mb-5 bg-white rounded"
-                        name="username" id="nome" value="{{ username }}" placeholder="Nome" required>
+                        name="username" id="nome" value="{{ user.username }}" placeholder="Nome">
                     {% endif %}
                 </div>
 
@@ -45,7 +47,7 @@
                     {%if passwordErros %}
                     <input type="password"
                         class="form-control is-invalid form-control-lg shadow p-4 mb-2 bg-white rounded" id="senha"
-                        name="password" placeholder="Senha" required>
+                        name="password" placeholder="Senha">
                     {% for error in passwordErros %}
                     <div class="invalid-feedback">
                         <li>{{ error }}</li>
@@ -53,7 +55,7 @@
                     {% endfor %}
                     {% else %}
                     <input type="password" class="form-control form-control-lg shadow p-4 mb-5 bg-white rounded"
-                        id="senha" name="password" placeholder="Senha" required>
+                        id="senha" name="password" placeholder="Senha">
                     {% endif %}
                 </div>
 
@@ -62,7 +64,7 @@
                     {%if passwordErros %}
                     <input type="password"
                         class="form-control is-invalid form-control-lg shadow p-4 mb-2 bg-white rounded" id="senha"
-                        name="confirmar_senha" placeholder="Confirmar senha" required>
+                        name="confirmar_senha" placeholder="Confirmar senha">
                     {% for error in passwordErros %}
                     <div class="invalid-feedback">
                         <li>{{ error }}</li>
@@ -70,7 +72,7 @@
                     {% endfor %}
                     {% else %}
                     <input type="password" class="form-control form-control-lg shadow p-4 mb-5 bg-white rounded"
-                        id="confirmar_senha" name="confirmar_senha" placeholder="Confirmar Senha" required>
+                        id="confirmar_senha" name="confirmar_senha" placeholder="Confirmar Senha">
                     {% endif %}
                 </div>
 
@@ -91,7 +93,7 @@
                 <div class="card mb-3" style="max-width: 540px;">
                     <div class="row g-0">
                         <div class="col-md-4">
-                            <img src="..." class="img-fluid rounded-start" alt="...">
+                            <img src="http://source.unsplash.com/random/180x180?r=1" class="img-fluid rounded-start" alt="...">
                         </div>
                         <div class="col-md-8">
                             <div class="card-body">
@@ -107,7 +109,7 @@
                 <div class="card mb-3" style="max-width: 540px;">
                     <div class="row g-0">
                         <div class="col-md-4">
-                            <img src="..." class="img-fluid rounded-start" alt="...">
+                            <img src="http://source.unsplash.com/random/180x180?r=2" class="img-fluid rounded-start" alt="...">
                         </div>
                         <div class="col-md-8">
                             <div class="card-body">
@@ -123,7 +125,7 @@
                 <div class="card mb-3" style="max-width: 540px;">
                     <div class="row g-0">
                         <div class="col-md-4">
-                            <img src="..." class="img-fluid rounded-start" alt="...">
+                            <img src="http://source.unsplash.com/random/180x180?r=3" class="img-fluid rounded-start" alt="...">
                         </div>
                         <div class="col-md-8">
                             <div class="card-body">
@@ -143,6 +145,10 @@
         </div>
     </div>
 
+    {% if user.tipo == 'C' %}
+        {% include 'agenda/sencao/perfil-cliente-historico.html' %}
+    {% else %}
+    {% endif %}
 </section>
 
 {% endblock 'conteudo' %}
