@@ -120,3 +120,10 @@ def perfil(request):
 @login_required(login_url='agenda:login')
 def empresa(request):
     return render(request, 'agenda/empresa.html')
+
+
+def servico(request):
+    return render(request, 'agenda/servico.html')
+
+def agenda(request):
+    return render(request, 'agenda/agenda.html')

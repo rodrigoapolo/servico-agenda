@@ -11,4 +11,6 @@ urlpatterns = [
     path('login/create-cliente', views.create_cliente, name='create_cliente'),
     path('perfil/', views.perfil, name='perfil'),
     path('empresa/', views.empresa, name='empresa'),
+    path('servico/', views.servico, name='servico'),
+    path('agenda/', views.agenda, name='agenda'),
 ]
