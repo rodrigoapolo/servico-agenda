@@ -14,91 +14,28 @@
         <div class="container py-5 h-100 bg-white">
             <div class="d-flex justify-content-center flex-wrap">
 
-                <div class="card m-3" style="width: 20rem;">
-                    <img class="card-img-top" src="http://source.unsplash.com/random/180x100?r=1"
-                        alt="Imagem de capa do card">
-                    <div class="card-body">
-                        <h5 class="card-title">Título do card</h5>
-                        <p class="card-text">Um exemplo de texto rápido para construir o título do card e fazer
-                            preencher o
-                            conteúdo
-                            do
-                            card.</p>
-                    </div>
-
-                    <div class="card-body">
-                        <a href="#" class="card-link">Link do card</a>
-                    </div>
-                </div>
-
-                <div class="card  m-3" style="width: 20rem;">
-                    <img class="card-img-top" src="http://source.unsplash.com/random/180x100?r=2"
-                        alt="Imagem de capa do card">
-                    <div class="card-body">
-                        <h5 class="card-title">Título do card</h5>
-                        <p class="card-text">Um exemplo de texto rápido para construir o título do card e fazer
-                            preencher o
-                            conteúdo
-                            do
-                            card.</p>
-                    </div>
-
-                    <div class="card-body">
-                        <a href="#" class="card-link">Link do card</a>
-                    </div>
-                </div>
+            {% for empresa in empresas %}
 
                 <div class="card m-3" style="width: 20rem;">
-                    <img class="card-img-top" src="http://source.unsplash.com/random/180x100?r=3"
+                    <img class="card-img-top" src="{{ empresa.foto}}"
                         alt="Imagem de capa do card">
                     <div class="card-body">
-                        <h5 class="card-title">Título do card</h5>
-                        <p class="card-text">Um exemplo de texto rápido para construir o título do card e fazer
-                            preencher o
-                            conteúdo
-                            do
-                            card.</p>
+                        <h5 class="card-title">{{ empresa.nome }}</h5>
+                        <p class="card-text">{{ empresa.descricao }}</p>
+                        <p class="card-text">CEP: {{ empresa.cep }}</p>
+                        <p class="card-text">Numero: {{ empresa.numero }}</p>
                     </div>
+                    <form action="{% url 'agenda:servico' %}" method="POST" class="d-flex justify-content-center p-3">
+                        {% csrf_token %}
 
-                    <div class="card-body">
-                        <a href="#" class="card-link">Link do card</a>
-                    </div>
+    
+                            <input class="visually-hidden" type="text" id="id_empresa" name="id_empresa" value="{{ empresa.pk }}">
+    
+
+                        <button type="submit" class="btn btn-primary">Agendar</button>
+                    </form>
                 </div>
-
-
-                <div class="card m-3" style="width: 20rem;">
-                    <img class="card-img-top" src="http://source.unsplash.com/random/180x100?r=4"
-                        alt="Imagem de capa do card">
-                    <div class="card-body">
-                        <h5 class="card-title">Título do card</h5>
-                        <p class="card-text">Um exemplo de texto rápido para construir o título do card e fazer
-                            preencher o
-                            conteúdo
-                            do
-                            card.</p>
-                    </div>
-
-                    <div class="card-body">
-                        <a href="#" class="card-link">Link do card</a>
-                    </div>
-                </div>
-
-                <div class="card m-3" style="width: 20rem;">
-                    <img class="card-img-top" src="http://source.unsplash.com/random/180x100?r=5"
-                        alt="Imagem de capa do card">
-                    <div class="card-body">
-                        <h5 class="card-title">Título do card</h5>
-                        <p class="card-text">Um exemplo de texto rápido para construir o título do card e fazer
-                            preencher o
-                            conteúdo
-                            do
-                            card.</p>
-                    </div>
-
-                    <div class="card-body">
-                        <a href="#" class="card-link">Link do card</a>
-                    </div>
-                </div>
+                {% endfor %}      
             </div>
         </div>
     </section>

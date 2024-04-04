@@ -19,6 +19,12 @@
         <h1 class="text-center">Login</h1>
         <form action="{% url 'agenda:login' %}" method="POST">
           {% csrf_token %}
+          <div class="form-outline mb-4">
+            <label for="email">Codigo da Empresa</label>
+            <input type="text" class="form-control form-control-lg shadow p-4 mb-2 bg-white rounded"
+              name="codigo" id="codigo" placeholder="Codigo" required>
+
+          </div>
           <!-- Email input -->
           <div class="form-outline mb-4">
             <label for="email">Email</label>
