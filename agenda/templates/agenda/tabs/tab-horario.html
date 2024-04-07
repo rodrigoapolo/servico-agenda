@@ -1,0 +1,21 @@
+<div class="tab-pane fade show" id="pills-{{ id }}" role="tabpanel" aria-labelledby="pills-{{ id }}-tab">
+    <div class="fcorner-10 mt-20 mb-4 p-2 d-flex justify-content-center flex-wrap">
+        {% for inicio, fim in agendaFuncionario %}
+        <div class="card text-center m-3" style="width: 18rem;">
+            <div class="card-header">Horário</div>
+            <div class="card-body">
+                <h5 class="card-title">{{ servico.nome }}</h5>
+                <p class="card-text">{{ inicio }} - {{ fim }}</p>
+                <form action="#" method="POST">
+                    {% csrf_token %}
+                    <input type="date" id="data" name="data" value="{{ data }}" class="d-none" >
+                    <input type="text" id="hora_inicio" name="hora_inicio" value="{{ inicio }} " class="d-none" >
+                    <input type="text" id="hora_final" name="dathora_final" value="{{ fim }}" class="d-none" >
+                    <input type="text" id="idFuncionario" name="idFuncionario" value="{{ id }}" class="d-none" >
+                    <button type="submit" class="btn btn-primary">Agendar</button>
+                </form>
+            </div>
+        </div>   
+        {% endfor %}    
+    </div>
+</div>

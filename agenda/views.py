@@ -1,12 +1,13 @@
 import imp
 from re import T
+from traceback import print_tb
 from django.shortcuts import render, redirect
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth import authenticate, login, update_session_auth_hash
 from django.contrib import auth
 from django.contrib.auth.decorators import login_required
 from datetime import datetime, timedelta
-
+from agenda.util import encontrar_menor_maior_hora, dividir_horarios, filtrar_horarios_nao_ocupados
 from agenda import models
 
 def index(request):
@@ -145,44 +146,78 @@ def agenda(request):
         data = datetime.strptime(request.POST['data'], '%Y-%m-%d')
         servico = models.Servico.objects.get(pk=id_servico)
         
+        # Obter os funcionários que prestam o serviço no dia da semana
         funcionarios = models.ServicoFuncionario.objects.filter(
             servico_id=id_servico,
             funcionario__diasemanafuncionario__dia__pk=data.weekday()+1).values_list('funcionario', flat=True)
+        
+        lista_funcionarios = models.User.objects.filter(pk__in=funcionarios)
 
         agendamentos = models.Agenda.objects.filter(
-            servico__servicofuncionario__funcionario__pk__in=funcionarios,
+            funcionario__id__in=funcionarios,
             data_inicio__date=data.date()).values_list('data_inicio', 'data_final')
 
         horarios_trabalho = models.DiaSemanaFuncionario.objects.filter(
             funcionario__pk__in=funcionarios,  
             dia = data.weekday()+1
-        ).values_list('horaIncial', 'horaFinal')
+        ).values_list('horaInicial', 'horaFinal')
         
-        tempo_servico = models.Servico.objects.get(pk=id_servico).tempoSevico
+        menor_hora, maior_hora = encontrar_menor_maior_hora(horarios_trabalho)
         
-        print(tempo_servico )
-        print(funcionarios)
-        print(agendamentos)
-        print(horarios_trabalho)
-        
-        # Suponha que você tenha o horário de início e o horário final
-        hora_inicial = datetime.strptime('08:00', '%H:%M')
-        hora_final = datetime.strptime('18:00', '%H:%M')
+        tempo_servico = models.Servico.objects.get(pk=id_servico).tempoServico
+                
+        # horário de início e o horário final
+        hora_inicial = datetime.combine(datetime.today(), menor_hora)
+        hora_final = datetime.combine(datetime.today(), maior_hora)
 
         # Lista para armazenar os intervalos de uma hora
-        horarios_divididos = []
-
-        # Iterar sobre os intervalos de uma hora
-        horario_atual = hora_inicial
-        while horario_atual < hora_final:
-            proximo_horario = horario_atual + timedelta(hours=1)
-            horarios_divididos.append((horario_atual.time(), proximo_horario.time()))
-            horario_atual = proximo_horario
-
-        # Imprimir os intervalos de uma hora
-        for inicio, fim in horarios_divididos:
-            print(f"Início: {inicio}, Fim: {fim}")
+        horarios_divididos = dividir_horarios(hora_inicial, hora_final, tempo_servico)
             
-        return render(request, 'agenda/agenda.html', {'servico': servico, 'data': request.POST['data']})        
+        horarios_divididos_nao_ocupados = filtrar_horarios_nao_ocupados(horarios_divididos, agendamentos)
+        
+        lista_agendamentos = []
+        for funcionario in lista_funcionarios:
+            print("="*50)
+            print(funcionario.pk)
+            print("="*50)
+            lista_agendamentos.append((funcionario.pk, bucas_agendamentos(funcionario.pk, data, id_servico)))
+        
+        print("="*50)
+        print(lista_agendamentos)
+        print("="*50)
+        return render(request, 'agenda/agenda.html', {
+            'servico': servico,
+            'lista_funcionarios': lista_funcionarios,
+            'horarios_divididos_nao_ocupados': horarios_divididos_nao_ocupados,
+            'lista_agendamentos': lista_agendamentos,
+            'data': request.POST['data']
+            })        
     return redirect('agenda:home')
+
+
+def bucas_agendamentos(funcionario, data, id_servico):
+    # Obtenha os horários de trabalho do funcionário
+    horarios_trabalho = models.DiaSemanaFuncionario.objects.filter(
+        funcionario=funcionario,
+        dia=data.weekday() + 1
+    ).values_list('horaInicial', 'horaFinal')
+
+    # Encontre a menor e a maior hora dos horários de trabalho do funcionário
+    menor_hora, maior_hora = encontrar_menor_maior_hora(horarios_trabalho)
+    
+    # Obtenha os agendamentos do funcionário para o dia especificado
+    agendamentos = models.Agenda.objects.filter(
+        funcionario=funcionario,
+        data_inicio__date=data.date()
+    ).values_list('data_inicio', 'data_final')
+
+    # Calcule os horários divididos não ocupados pelo funcionário
+    tempo_servico = models.Servico.objects.get(pk=id_servico).tempoServico
+    hora_inicial = datetime.combine(data.date(), menor_hora)
+    hora_final = datetime.combine(data.date(), maior_hora)
+    horarios_divididos = dividir_horarios(hora_inicial, hora_final, tempo_servico)
+    horarios_divididos_nao_ocupados = filtrar_horarios_nao_ocupados(horarios_divididos, agendamentos)
+
+    return horarios_divididos_nao_ocupados
+
 

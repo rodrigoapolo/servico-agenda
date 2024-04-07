@@ -19,7 +19,7 @@ class Dia(models.Model):
 
 class DiaSemanaFuncionario(models.Model):
     id = models.AutoField(primary_key=True)
-    horaIncial = models.TimeField()
+    horaInicial = models.TimeField()
     horaFinal = models.TimeField()
     dia = models.ForeignKey(Dia, on_delete=models.SET_NULL, blank=True, null=True)
     funcionario = models.ForeignKey(User, on_delete=models.SET_NULL, blank=True, null=True)
@@ -39,7 +39,7 @@ class Servico(models.Model):
     nome = models.CharField(max_length=200, blank=True, null=True)
     descricao = models.CharField(max_length=200, blank=True, null=True)
     valor = models.FloatField()
-    tempoSevico = models.TimeField()
+    tempoServico = models.TimeField()
     intervalo = models.TimeField()
     empresa = models.ForeignKey(Empresa, on_delete=models.SET_NULL, blank=True, null=True)
     
@@ -57,7 +57,8 @@ class Agenda(models.Model):
     data_final = models.DateTimeField()
     status = models.CharField(max_length=1, choices=STATUS)
     servico = models.ForeignKey(Servico, on_delete=models.SET_NULL, blank=True, null=True)
-    cliente = models.ForeignKey(User, on_delete=models.SET_NULL, blank=True, null=True)
+    cliente = models.ForeignKey(User, on_delete=models.SET_NULL, blank=True, null=True, related_name='agendas_cliente')
+    funcionario = models.ForeignKey(User, on_delete=models.SET_NULL, blank=True, null=True, related_name='agendas_funcionario')
     
 class EmpresaFuncionario(models.Model):
     id = models.AutoField(primary_key=True)

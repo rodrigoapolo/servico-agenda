@@ -10,6 +10,9 @@
 {% include 'global/menu.html' %}
 <section class="p-0 bg-secondary-subtle">
     <div class="container pt-3 h-100 bg-white">
+        <form action="{% url 'agenda:home' %}" method="get">
+            <button type="submit" class="btn btn-primary">Voltar</button>
+        </form>
         <h1 class="text-center pt-2">{{ empresa.nome }}</h1>
         <h5 class="text-center p-2">{{ empresa.numero }}, {{ empresa.cep }}.</h5>
 
@@ -23,7 +26,7 @@
                         <h5 class="card-title">{{ servico.nome }}</h5>
                         <p class="card-text">{{ servico.descricao }}</p>
                         <p class="card-text">Valor: {{ servico.valor }}</p>
-                        <p class="card-text">Tempo: {{ servico.tempoSevico }}</p>
+                        <p class="card-text">Tempo: {{ servico.tempoServico }}</p>
                         <p id="data-atual"></p>
                        
                         <form action="{% url 'agenda:agenda' %}" method="POST">

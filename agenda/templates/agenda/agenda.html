@@ -13,211 +13,55 @@
         <form action="{% url 'agenda:home' %}" method="get">
             <button type="submit" class="btn btn-primary">Voltar</button>
         </form>
-        <div class="card text-center m-4">
+        <div class="card text-center m-3">
+            <div class="card-header fw-bold">{{ servico.nome }}</div>
             <div class="card-body">
-                <h5 class="card-title">{{ servico.nome }}</h5>
                 <p class="card-text">{{ servico.descricao }}</p>
-                <p class="card-text">Valor: {{ servico.valor }}</p>
-                <p class="card-text">Tempo: {{ servico.tempoSevico }}</p>
-                <label for="data">Selecione uma data</label>
+                <p class="card-text">Valor: R$ {{ servico.valor }}</p>
+                <p class="card-text">Tempo: {{ servico.tempoServico }} H</p>
+                <label for="data">Data</label>
                 <div class="mb-2">
                     <input type="date" id="data" name="data" value="{{ data }}" disabled >
                 </div>
             </div>
-        </div>
+        </div>   
+
+        <h5 class="text-center" >Selecione o profissional</h5>
         <ul class="nav nav-pills mb-3 d-flex justify-content-center" id="pills-tab" role="tablist">
             {% include 'global/snippets/pills-tabs.html' with status='active' id='pessoa' text='pessoa' %}
-            {% include 'global/snippets/pills-tabs.html' with id='rafael' text='Rafael' %}
-            {% include 'global/snippets/pills-tabs.html' with id='walter' text='Walter' %}
+            {% for funcionario in lista_funcionarios %}
+                {% include 'global/snippets/pills-tabs.html' with id=funcionario.pk text=funcionario.username %}
+            {% endfor %}    
         </ul>
+        <h5 class="text-center">Selecione a hora</h5>
         <div class="tab-content" id="pills-tabContent">
             <div class="tab-pane fade show active" id="pills-pessoa" role="tabpanel" aria-labelledby="pills-pessoa-tab">
-                <div class="fcorner-10 mt-20 mb-4 card p-2">
-                    <div class="card text-center m-3">
-                        <div class="card-header">
-                            Featured
-                        </div>
+                <div class="fcorner-10 mt-20 mb-4 p-2 d-flex justify-content-center flex-wrap">
+                    {% for inicio, fim in horarios_divididos_nao_ocupados %}
+                    <div class="card text-center m-3" style="width: 18rem;">
+                        <div class="card-header">Horário</div>
                         <div class="card-body">
-                            <h5 class="card-title">Special title treatment</h5>
-                            <p class="card-text">With supporting text below as a natural lead-in to additional content.
-                            </p>
-                            <a href="#" class="btn btn-primary">Go somewhere</a>
+                            <h5 class="card-title">{{ servico.nome }}</h5>
+                            <p class="card-text">{{ inicio }} - {{ fim }}</p>
+                            <form action="#" method="POST">
+                                {% csrf_token %}
+                                <input type="date" id="data" name="data" value="{{ data }}" class="d-none">
+                                <input type="text" id="hora_inicio" name="hora_inicio" value="{{ inicio }} " class="d-none">
+                                <input type="text" id="hora_final" name="dathora_final" value="{{ fim }}" class="d-none">
+                                <button type="submit" class="btn btn-primary">Agendar</button>
+                            </form>
                         </div>
-
-                    </div>
-
-                    <div class="card text-center m-3">
-                        <div class="card-header">
-                            Featured
-                        </div>
-                        <div class="card-body">
-                            <h5 class="card-title">Special title treatment</h5>
-                            <p class="card-text">With supporting text below as a natural lead-in to additional content.
-                            </p>
-                            <a href="#" class="btn btn-primary">Go somewhere</a>
-                        </div>
-
-                    </div>
-
-                    <div class="card text-center m-3">
-                        <div class="card-header">
-                            Featured
-                        </div>
-                        <div class="card-body">
-                            <h5 class="card-title">Special title treatment</h5>
-                            <p class="card-text">With supporting text below as a natural lead-in to additional content.
-                            </p>
-                            <a href="#" class="btn btn-primary">Go somewhere</a>
-                        </div>
-
-                    </div>
-
-                    <div class="card text-center m-3">
-                        <div class="card-header">
-                            Featured
-                        </div>
-                        <div class="card-body">
-                            <h5 class="card-title">Special title treatment</h5>
-                            <p class="card-text">With supporting text below as a natural lead-in to additional content.
-                            </p>
-                            <a href="#" class="btn btn-primary">Go somewhere</a>
-                        </div>
-
-                    </div>
-
-                    <div class="card text-center m-3">
-                        <div class="card-header">
-                            Featured
-                        </div>
-                        <div class="card-body">
-                            <h5 class="card-title">Special title treatment</h5>
-                            <p class="card-text">With supporting text below as a natural lead-in to additional content.
-                            </p>
-                            <a href="#" class="btn btn-primary">Go somewhere</a>
-                        </div>
-
-                    </div>
+                    </div>   
+                    {% endfor %}    
                     
-                    <div class="col justify-content-center">
-                        <form action="#" method="POST">
-                            {% csrf_token %}
-                            <button type="submit" class="btn btn-primary">Agendar</button>
-                        </form>
-                    </div>
                 </div>
             </div>
 
-            <div class="tab-pane fade show" id="pills-rafael" role="tabpanel" aria-labelledby="pills-rafael-tab">
-                <div class="fcorner-10 mt-20 mb-4 card p-2">
-                    <div class="card text-center m-3">
-                        <div class="card-header">
-                            Featured
-                        </div>
-                        <div class="card-body">
-                            <h5 class="card-title">Special title treatment</h5>
-                            <p class="card-text">With supporting text below as a natural lead-in to additional content.
-                            </p>
-                            <a href="#" class="btn btn-primary">Go somewhere</a>
-                        </div>
+            {% for id, agendaFuncionario in lista_agendamentos %}
+                {% include 'agenda/tabs/tab-horario.html' with id=id agenda=agendaFuncionario %}
+            {% endfor %}    
 
-                    </div>
-
-                    <div class="card text-center m-3">
-                        <div class="card-header">
-                            Featured
-                        </div>
-                        <div class="card-body">
-                            <h5 class="card-title">Special title treatment</h5>
-                            <p class="card-text">With supporting text below as a natural lead-in to additional content.
-                            </p>
-                            <a href="#" class="btn btn-primary">Go somewhere</a>
-                        </div>
-
-                    </div>
-
-                    <div class="card text-center m-3">
-                        <div class="card-header">
-                            Featured
-                        </div>
-                        <div class="card-body">
-                            <h5 class="card-title">Special title treatment</h5>
-                            <p class="card-text">With supporting text below as a natural lead-in to additional content.
-                            </p>
-                            <a href="#" class="btn btn-primary">Go somewhere</a>
-                        </div>
-
-                    </div>
-
-                    <div class="card text-center m-3">
-                        <div class="card-header">
-                            Featured
-                        </div>
-                        <div class="card-body">
-                            <h5 class="card-title">Special title treatment</h5>
-                            <p class="card-text">With supporting text below as a natural lead-in to additional content.
-                            </p>
-                            <a href="#" class="btn btn-primary">Go somewhere</a>
-                        </div>
-
-                    </div>
-                </div>
-            </div>
-
-            <div class="tab-pane fade show" id="pills-walter" role="tabpanel" aria-labelledby="pills-walter-tab">
-                <div class="fcorner-10 mt-20 mb-4 card p-2">
-                    <div class="card text-center m-3">
-                        <div class="card-header">
-                            Featured
-                        </div>
-                        <div class="card-body">
-                            <h5 class="card-title">Special title treatment</h5>
-                            <p class="card-text">With supporting text below as a natural lead-in to additional content.
-                            </p>
-                            <a href="#" class="btn btn-primary">Go somewhere</a>
-                        </div>
-
-                    </div>
-                    <div class="card text-center m-3">
-                        <div class="card-header">
-                            Featured
-                        </div>
-                        <div class="card-body">
-                            <h5 class="card-title"></h5>
-                            <p class="card-text">With supporting text below as a natural lead-in to additional content.
-                            </p>
-                            <a href="#" class="btn btn-primary">Go somewhere</a>
-                        </div>
-
-                    </div>
-                    <div class="card text-center m-3">
-                        <div class="card-header">
-                            Featured
-                        </div>
-                        <div class="card-body">
-                            <h5 class="card-title">Special title treatment</h5>
-                            <p class="card-text">With supporting text below as a natural lead-in to additional content.
-                            </p>
-                            <a href="#" class="btn btn-primary">Go somewhere</a>
-                        </div>
-
-                    </div>
-                    <div class="card text-center m-3">
-                        <div class="card-header">
-                            Featured
-                        </div>
-                        <div class="card-body">
-                            <h5 class="card-title">Special title treatment</h5>
-                            <p class="card-text">With supporting text below as a natural lead-in to additional content.
-                            </p>
-                            <a href="#" class="btn btn-primary">Go somewhere</a>
-                        </div>
-
-                    </div>
-                </div>
-            </div>
         </div>
-
-
     </div>
 </section>
 {% endblock 'conteudo' %}
