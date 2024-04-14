@@ -12,6 +12,8 @@
 3. **Agora, crie um ambiente virtual na sua pasta de projeto:**
    ```bash
    python3 -m venv venv
+   ou
+   python -m venv venv
    ```
 
 4. **Agora, crie um ambiente virtual na sua pasta de projeto:**

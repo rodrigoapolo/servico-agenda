@@ -1,4 +1,6 @@
+from http import client
 import imp
+from pydoc import cli
 from re import T
 from traceback import print_tb
 from django.shortcuts import render, redirect
@@ -9,6 +11,7 @@ from django.contrib.auth.decorators import login_required
 from datetime import datetime, timedelta
 from agenda.util import encontrar_menor_maior_hora, dividir_horarios, filtrar_horarios_nao_ocupados
 from agenda import models
+from django.utils import timezone
 
 def index(request):
     return render(request, 'agenda/index.html')
@@ -39,7 +42,6 @@ def logout_view(request):
 
 @login_required(login_url='agenda:login')
 def home(request):
-    print(request.session['id_empresa'])
     empresa = models.Empresa.objects.get(pk=request.session['id_empresa'])
     empresas = models.Empresa.objects.filter(gerente_id=empresa.gerente_id)
 
@@ -93,6 +95,11 @@ def create_cliente(request):
 
 @login_required(login_url='agenda:login')
 def perfil(request):
+    
+    agendaHistorico = models.Agenda.objects.filter(cliente_id=request.user.pk, status='E')[:3]
+    agendaMarcada = models.Agenda.objects.filter(cliente_id=request.user.pk, status='M')[:4]
+    agendaProgramada = models.Agenda.objects.filter(cliente_id=request.user.pk, status='P')[:4]
+    
     if request.method == 'POST':
         print(request.POST)
         username = request.POST['username'] 
@@ -119,16 +126,43 @@ def perfil(request):
             return redirect('agenda:logout_view')
             
         
-        return render(request, 'agenda/perfil.html', {'passwordErros': passwordErros, 'user': request.user})
+        return render(request, 'agenda/perfil.html', {
+            'passwordErros': passwordErros,
+            'user': request.user,
+            'agendaHistorico': agendaHistorico,
+            'agendaMarcada': agendaMarcada,
+            'agendaProgramada': agendaProgramada})
                     
     else:
-        return render(request, 'agenda/perfil.html', {'user': request.user})
+        return render(request, 'agenda/perfil.html', {
+            'user': request.user,
+            'agendaHistorico': agendaHistorico,
+            'agendaMarcada': agendaMarcada,
+            'agendaProgramada': agendaProgramada})
     
     
 @login_required(login_url='agenda:login')
 def empresa(request):
-    return render(request, 'agenda/empresa.html')
-
+    if request.method == 'POST':
+        nome = request.POST['nome']
+        cep = request.POST['cep']
+        numero = request.POST['numero']
+        complemento = request.POST['complemento']
+        foto = request.FILES['foto']  
+        
+        models.Empresa.objects.create(
+            nome=nome,
+            cep=cep,
+            numero=numero,
+            complemento=complemento,
+            foto=foto,
+            gerente_id=request.user.pk
+        )
+        
+        
+    empresas = models.Empresa.objects.filter(gerente_id=request.user.pk)
+    return render(request, 'agenda/empresa.html', {'empresas': empresas})
+        
 
 def servico(request):
     if request.method == 'POST':
@@ -177,14 +211,8 @@ def agenda(request):
         
         lista_agendamentos = []
         for funcionario in lista_funcionarios:
-            print("="*50)
-            print(funcionario.pk)
-            print("="*50)
             lista_agendamentos.append((funcionario.pk, bucas_agendamentos(funcionario.pk, data, id_servico)))
         
-        print("="*50)
-        print(lista_agendamentos)
-        print("="*50)
         return render(request, 'agenda/agenda.html', {
             'servico': servico,
             'lista_funcionarios': lista_funcionarios,
@@ -220,4 +248,25 @@ def bucas_agendamentos(funcionario, data, id_servico):
 
     return horarios_divididos_nao_ocupados
 
+@login_required(login_url='agenda:login')
+def gerarAgendamento(request):
+    if request.method == 'POST':
+        data = request.POST['data']
+        hora_inicio = request.POST['hora_inicio'].strip()
+        hora_final = request.POST['hora_final'].strip()
+        idFuncionario = request.POST['idFuncionario'] 
+        idServico = request.POST['idServico']
+      
+        hora_inicio = datetime.strptime(data + ' ' + hora_inicio+ ':' + '00 +0000', '%Y-%m-%d %H:%M:%S %z')
+        hora_final = datetime.strptime(data + ' ' + hora_final+ ':' + '00 +0000', '%Y-%m-%d %H:%M:%S %z')
 
+        models.Agenda(
+            data_inicio=hora_inicio,
+            data_final=hora_final,
+            status='M',
+            cliente_id=request.user.pk,
+            funcionario_id=idFuncionario,
+            servico_id=idServico
+        ).save()
+        
+    return redirect('agenda:perfil')

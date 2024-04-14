@@ -90,57 +90,30 @@
             </form>
             <div class="w-50 p-5">
                 <h2>Historico Agendamento</h2>
-                <div class="card mb-3" style="max-width: 540px;">
-                    <div class="row g-0">
-                        <div class="col-md-4">
-                            <img src="http://source.unsplash.com/random/180x180?r=1" class="img-fluid rounded-start" alt="...">
-                        </div>
-                        <div class="col-md-8">
-                            <div class="card-body">
-                                <h5 class="card-title">Card title</h5>
-                                <p class="card-text">This is a wider card with supporting text below as a natural
-                                    lead-in to additional content. This content is a little bit longer.</p>
-                                <p class="card-text"><small class="text-body-secondary">Last updated 3 mins ago</small>
-                                </p>
+                {% if agendaHistorico %}
+                    {% for agenda in agendaHistorico %}
+                        <div class="card mb-3" style="max-width: 540px;">
+                            <div class="row g-0">
+                                <div class="col-md-4 d-flex justify-content-center">
+                                    <img src="{{ agenda.servico.empresa.foto }}" class="img-fluid" alt="...">
+                                </div>
+                                <div class="col-md-8">
+                                    <div class="card-body">
+                                        <h5 class="card-title">{{ agenda.servico.nome }}</h5>
+                                        <p class="card-text">{{ agenda.servico.descricao }}</p>
+                                        <p class="card-text"><small class="text-body-secondary"> {{ agenda.funcionario.username}} </small></p>
+                                        <p class="card-text"><small class="text-body-secondary">{{ agenda.data_inicio|date:"l, d F Y" }} ás {{ agenda.data_inicio|time:"H:i" }} 
+                                            as {{ agenda.data_final|time:"H:i" }}</small>
+                                        </p>
+                                    </div>
+                                </div>
                             </div>
                         </div>
+                    {% endfor %}      
+                    <div class="d-flex justify-content-end mb-4 ">
+                        <a href="{% url 'agenda:login' %}">Ver mais...</a>
                     </div>
-                </div>
-                <div class="card mb-3" style="max-width: 540px;">
-                    <div class="row g-0">
-                        <div class="col-md-4">
-                            <img src="http://source.unsplash.com/random/180x180?r=2" class="img-fluid rounded-start" alt="...">
-                        </div>
-                        <div class="col-md-8">
-                            <div class="card-body">
-                                <h5 class="card-title">Card title</h5>
-                                <p class="card-text">This is a wider card with supporting text below as a natural
-                                    lead-in to additional content. This content is a little bit longer.</p>
-                                <p class="card-text"><small class="text-body-secondary">Last updated 3 mins ago</small>
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="card mb-3" style="max-width: 540px;">
-                    <div class="row g-0">
-                        <div class="col-md-4">
-                            <img src="http://source.unsplash.com/random/180x180?r=3" class="img-fluid rounded-start" alt="...">
-                        </div>
-                        <div class="col-md-8">
-                            <div class="card-body">
-                                <h5 class="card-title">Card title</h5>
-                                <p class="card-text">This is a wider card with supporting text below as a natural
-                                    lead-in to additional content. This content is a little bit longer.</p>
-                                <p class="card-text"><small class="text-body-secondary">Last updated 3 mins ago</small>
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="d-flex justify-content-end mb-4 ">
-                    <a href="{% url 'agenda:login' %}">Ver mais...</a>
-                </div>
+                {% endif %}
             </div>
         </div>
     </div>

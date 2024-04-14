@@ -15,24 +15,24 @@
             {% csrf_token %}
             <div class="col-md-6">
                 <label for="nome" class="form-label">Nome</label>
-                <input type="text" class="form-control is-invalid" id="nome" placeholder="Nome" required>
+                <input type="text" class="form-control is-invalid" name="nome" id="nome" placeholder="Nome" required>
             </div>
             <div class="col-md-6">
                 <label for="cep" class="form-label">CEP</label>
-                <input type="text" class="form-control" id="cep" placeholder="CEP" required>
+                <input type="text" class="form-control" id="cep" name="cep" placeholder="CEP" required>
             </div>
             <div class="col-6">
                 <label for="numero" class="form-label">Numero</label>
-                <input type="text" class="form-control" id="numero" placeholder="Numero" required>
+                <input type="text" class="form-control" id="numero" name="numero" placeholder="Numero" required>
             </div>
             <div class="col-6">
                 <label for="complemento" class="form-label">Complemento</label>
-                <input type="text" class="form-control" id="complemento" placeholder="Complemento">
+                <input type="text" class="form-control" id="complemento" name="complemento" placeholder="Complemento">
             </div>
             <div class="col-md-12">
                 <div class="input-group mb-3">
                     <label class="input-group-text" for="foto">Foto</label>
-                    <input type="file" class="form-control" id="foto" required>
+                    <input type="file" class="form-control" name="foto" id="foto" required>
                 </div>
 
 
@@ -46,86 +46,28 @@
     <div class="container pt-4 h-100 bg-white">
         <h1 class="ms-3">Minhas Empresas</h1>
         <div class="d-flex justify-content-center flex-wrap">
-            <div class="card mb-3">
-                <div class="row g-0">
-                    <div class="col-md-4">
-                        <img src="http://source.unsplash.com/random/315x280?r=1" class="img-fluid rounded-start" alt="...">
-                    </div>
-                    <div class="col-md-8">
-                        <div class="card-body">
-                            <h5 class="card-title">Card title</h5>
-                            <p class="card-text">This is a wider card with supporting text below as a natural lead-in to
-                                additional content. This content is a little bit longer.</p>
-                            <p class="card-text">This is a wider card with supporting text below as a natural lead-in to
-                                additional content. This content is a little bit longer.</p>
-                            <p class="card-text">This is a wider card with supporting text below as a natural lead-in to
-                                additional content. This content is a little bit longer.</p>
-                            <p class="card-text"><small class="text-body-secondary">Last updated 3 mins ago</small></p>
+            {% if empresas %}
+                {% for empresa in empresas %}
+                    <div class="card mb-3">
+                        <div class="row g-0">
+                            <div class="col-md-4">
+                                {% if empresa.foto %}
+                                <img src="{{ empresa.foto.url }}" class="img-fluid rounded-start" alt="...">
+                                {% endif %}
+                            </div>
+                            <div class="col-md-8">
+                                <div class="card-body">
+                                    <h5 class="card-title">{{ empresa.nome }}</h5>
+                                    <p class="card-text">{{ empresa.descricao }}</p>
+                                    <p class="card-text">CEP: {{ empresa.cep }}</p>
+                                    <p class="card-text">Número: {{ empresa.numero }}</p>
+                                    <p class="card-text"><small class="text-body-secondary">Last updated 3 mins ago</small></p>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                </div>
-            </div>
-
-            <div class="card mb-3">
-                <div class="row g-0">
-                    <div class="col-md-4">
-                        <img src="http://source.unsplash.com/random/315x280?r=2" class="img-fluid rounded-start" alt="...">
-                    </div>
-                    <div class="col-md-8">
-                        <div class="card-body">
-                            <h5 class="card-title">Card title</h5>
-                            <p class="card-text">This is a wider card with supporting text below as a natural lead-in to
-                                additional content. This content is a little bit longer.</p>
-                            <p class="card-text">This is a wider card with supporting text below as a natural lead-in to
-                                additional content. This content is a little bit longer.</p>
-                            <p class="card-text">This is a wider card with supporting text below as a natural lead-in to
-                                additional content. This content is a little bit longer.</p>
-                            <p class="card-text"><small class="text-body-secondary">Last updated 3 mins ago</small></p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="card mb-3">
-                <div class="row g-0">
-                    <div class="col-md-4">
-                        <img src="http://source.unsplash.com/random/315x280?r=3" class="img-fluid rounded-start" alt="...">
-                    </div>
-                    <div class="col-md-8">
-                        <div class="card-body">
-                            <h5 class="card-title">Card title</h5>
-                            <p class="card-text">This is a wider card with supporting text below as a natural lead-in to
-                                additional content. This content is a little bit longer.</p>
-                            <p class="card-text">This is a wider card with supporting text below as a natural lead-in to
-                                additional content. This content is a little bit longer.</p>
-                            <p class="card-text">This is a wider card with supporting text below as a natural lead-in to
-                                additional content. This content is a little bit longer.</p>
-                            <p class="card-text"><small class="text-body-secondary">Last updated 3 mins ago</small></p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="card mb-3">
-                <div class="row g-0">
-                    <div class="col-md-4">
-                        <img src="http://source.unsplash.com/random/315x280?r=4" class="img-fluid rounded-start" alt="...">
-                    </div>
-                    <div class="col-md-8">
-                        <div class="card-body">
-                            <h5 class="card-title">Card title</h5>
-                            <p class="card-text">This is a wider card with supporting text below as a natural lead-in to
-                                additional content. This content is a little bit longer.</p>
-                            <p class="card-text">This is a wider card with supporting text below as a natural lead-in to
-                                additional content. This content is a little bit longer.</p>
-                            <p class="card-text">This is a wider card with supporting text below as a natural lead-in to
-                                additional content. This content is a little bit longer.</p>
-                            <p class="card-text"><small class="text-body-secondary">Last updated 3 mins ago</small></p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
+                {% endfor %}     
+            {% endif %}
         </div>
     </div>
 </section>

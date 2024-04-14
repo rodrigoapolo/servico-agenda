@@ -6,11 +6,12 @@
             <div class="card-body">
                 <h5 class="card-title">{{ servico.nome }}</h5>
                 <p class="card-text">{{ inicio }} - {{ fim }}</p>
-                <form action="#" method="POST">
+                <form action="{% url 'agenda:gerarAgendamento' %}" method="POST">
                     {% csrf_token %}
                     <input type="date" id="data" name="data" value="{{ data }}" class="d-none" >
+                    <input type="text" id="idServico" name="idServico" value="{{ servico.pk }}" class="d-none" >
                     <input type="text" id="hora_inicio" name="hora_inicio" value="{{ inicio }} " class="d-none" >
-                    <input type="text" id="hora_final" name="dathora_final" value="{{ fim }}" class="d-none" >
+                    <input type="text" id="hora_final" name="hora_final" value="{{ fim }}" class="d-none" >
                     <input type="text" id="idFuncionario" name="idFuncionario" value="{{ id }}" class="d-none" >
                     <button type="submit" class="btn btn-primary">Agendar</button>
                 </form>
