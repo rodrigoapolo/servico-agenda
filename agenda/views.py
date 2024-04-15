@@ -93,6 +93,41 @@ def create_cliente(request):
                     
     else:
         return render(request, 'agenda/create-cliente.html')
+    
+    
+def cadastrarFuncionario(request):
+    if request.method == 'POST':
+        username = request.POST['nome'] 
+        email = request.POST['email']
+        password = request.POST['password']
+        idEmpresa = request.POST.getlist('idEmpresa')
+        idServico = request.POST.getlist('idServico')
+       
+        funcionario = models.User.objects.create_user(username=username, email=email, password=password, tipo='F')
+        # Supondo que idEmpresa seja uma lista de IDs de empresas
+        for empresa_id in idEmpresa:
+            models.EmpresaFuncionario.objects.create(empresa_id=empresa_id, funcionario_id=funcionario.pk)
+
+        # Supondo que idServico seja uma lista de IDs de serviços
+        for servico_id in idServico:
+            models.ServicoFuncionario.objects.create(servico_id=servico_id, funcionario_id=funcionario.pk)
+
+        print("="*50)
+        print(username)
+        print(email)
+        print(password)
+        print(idEmpresa)
+        print(idServico)
+        print("="*50)
+                    
+
+    empresas = models.Empresa.objects.filter(gerente_id=request.user.pk)
+    servicos = models.Servico.objects.filter(empresa_id__in=empresas, status=True)
+    funcionarios = models.EmpresaFuncionario.objects.filter(empresa_id__in=empresas)
+    return render(request, 'agenda/cadastrar-funcionario.html', {
+        'empresas': empresas,
+        'servicos': servicos,
+        'funcionarios': funcionarios})
 
 @login_required(login_url='agenda:login')
 def perfil(request):

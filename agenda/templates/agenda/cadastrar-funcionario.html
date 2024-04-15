@@ -1,0 +1,92 @@
+{% extends 'global/base.html' %}
+{% load static %}
+{% block 'head' %}
+<link href="{% static 'agenda/css/login.css' %}" rel="stylesheet">
+{% endblock 'head' %}
+
+{% block 'titulo' %}Meus Funcionarios{% endblock 'titulo' %}
+
+{% block 'conteudo' %}
+{% include 'global/menu.html' %}
+<section class="p-0 bg-secondary-subtle">
+    <div class="container pb-3 h-100 bg-white">
+        <h1 class="text-center pt-2">Cadastra Funcionario</h1>
+        <form action="{% url 'agenda:cadastrarFuncionario' %}" method="POST" class="row g-3 w-50 m-auto p-3 shadow" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="col-md-6">
+                <label for="nome" class="form-label">Nome</label>
+                <input type="text" class="form-control" name="nome" id="nome" placeholder="Nome" required>
+            </div>
+            <div class="col-md-6">
+                <label for="email" class="form-label">Email</label>
+                <input type="email" class="form-control" id="email" name="email" placeholder="Email" required>
+            </div>
+            <div class="col-12">
+                <label for="password" class="form-label">Senha</label>
+                <input type="password" class="form-control" id="password" name="password" placeholder="Senha" required>
+            </div>
+            <div class="col-12">
+                {% if empresas %}
+                    <label class="form-label">Selecionar Empresas:</label>
+                    {% for empresa in empresas %}
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" value="{{ empresa.pk }}" name="idEmpresa" role="switch" id="idEmpresa{{ empresa.pk }}">
+                            <label class="form-check-label" for="idEmpresa{{ empresa.pk }}">{{ empresa.nome }}</label>
+                        </div>
+                    {% endfor %}     
+                {% endif %}
+            </div>
+            <div class="col-12">
+                {% if servicos %}
+                <div>
+                    <label class="form-label">Selecionar Serviços:</label>
+                </div>
+                    {% for servico in servicos %}
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="checkbox" name="idServico" id="idServico{{ servico.pk }}" value="{{ servico.pk }}">
+                            <label class="form-check-label" for="idServico{{ servico.pk }}">{{ servico.nome }}</label>
+                        </div>
+                    {% endfor %}     
+                {% endif %}
+            </div>
+            <div class="col-12 d-flex justify-content-center">
+                <button type="submit" class="btn btn-primary">Cadastra</button>
+            </div>
+        </form>
+    </div>
+    <div class="container pt-4 h-100 bg-white">
+        <h1 class="ms-3">Meus Funcionario</h1>
+        <div class="d-flex justify-content-center flex-wrap">
+            {% if funcionarios %}
+                {% for funcionario in funcionarios %}
+                    <div class="card mb-3">
+                        <div class="row g-0">
+                            <div class="col-md-4">
+                                {% if funcionario.empresa.foto %}
+                                <img src="{{ funcionario.empresa.foto.url }}" class="img-fluid rounded-start" alt="...">
+                                {% endif %}
+                            </div>
+                            <div class="col-md-8">
+                                <div class="card-body">
+                                    <h5 class="card-title">{{ funcionario.funcionario.username }}</h5>
+                                    <p class="card-text">{{ funcionario.funcionario.email }}</p>
+
+                                    <p class="card-text"><small class="text-body-secondary">{{ funcionario.empresa.nome }}</small></p>
+
+                                    <form action="{% url 'agenda:deletarServico' %}" method="POST">
+                                        {% csrf_token %}
+                                        <div class="d-flex justify-content-end">
+                                            <input type="text" id="idServico" name="idServico" value="{{ servico.pk }}" class="d-none">
+                                            <button type="submit" class="btn btn-danger">Deletar</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}     
+            {% endif %}
+        </div>
+    </div>
+</section>
+{% endblock 'conteudo' %}
