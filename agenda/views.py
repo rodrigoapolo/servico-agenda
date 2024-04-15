@@ -2,6 +2,7 @@ from http import client
 import imp
 from pydoc import cli
 from re import T
+import stat
 from traceback import print_tb
 from django.shortcuts import render, redirect
 from django.contrib.auth.forms import AuthenticationForm
@@ -168,17 +169,46 @@ def servico(request):
     if request.method == 'POST':
         id_empresa = request.POST['id_empresa'] 
         empresa = models.Empresa.objects.get(pk=id_empresa)
-        servicos = models.Servico.objects.filter(empresa_id=id_empresa)
-        print(servicos)
+        servicos = models.Servico.objects.filter(empresa_id=id_empresa, status=True)
         return render(request, 'agenda/servico.html', {'servicos': servicos, 'empresa': empresa})
     return redirect('agenda:home')
+
+def cadastrarServico(request):
+    if request.method == 'POST':
+        nome = request.POST['nome'] 
+        valor = request.POST['valor'] 
+        tempoServico = request.POST['tempoServico'] 
+        idempresa = request.POST['idempresa'] 
+        descricao = request.POST['descricao'] 
+        
+        valor = valor.replace(',', '.')
+        
+        models.Servico.objects.create(
+            nome=nome,
+            valor=valor,
+            tempoServico=tempoServico,
+            descricao=descricao,
+            empresa_id=idempresa
+        )
+        
+    
+    empresas = models.Empresa.objects.filter(gerente_id=request.user.pk)
+    servicos = models.Servico.objects.filter(empresa_id__in=empresas, status=True)
+    return render(request, 'agenda/cadastrar-servico.html', {'empresas': empresas, 'servicos': servicos})
+
+def deletarServico(request):
+    if request.method == 'POST':
+        idServico = request.POST['idServico'] 
+        models.Servico.objects.filter(pk=idServico).update(status=False)
+        
+    return redirect('agenda:cadastrarServico')
 
 def agenda(request):
     if request.method == 'POST':
         id_servico = request.POST['id_servico'] 
         id_empresa = request.POST['id_empresa'] 
         data = datetime.strptime(request.POST['data'], '%Y-%m-%d')
-        servico = models.Servico.objects.get(pk=id_servico)
+        servico = models.Servico.objects.get(pk=id_servico, status=True)
         
         # Obter os funcionários que prestam o serviço no dia da semana
         funcionarios = models.ServicoFuncionario.objects.filter(
@@ -198,7 +228,7 @@ def agenda(request):
         
         menor_hora, maior_hora = encontrar_menor_maior_hora(horarios_trabalho)
         
-        tempo_servico = models.Servico.objects.get(pk=id_servico).tempoServico
+        tempo_servico = models.Servico.objects.get(pk=id_servico, status=True).tempoServico
                 
         # horário de início e o horário final
         hora_inicial = datetime.combine(datetime.today(), menor_hora)
@@ -240,7 +270,7 @@ def bucas_agendamentos(funcionario, data, id_servico):
     ).values_list('data_inicio', 'data_final')
 
     # Calcule os horários divididos não ocupados pelo funcionário
-    tempo_servico = models.Servico.objects.get(pk=id_servico).tempoServico
+    tempo_servico = models.Servico.objects.get(pk=id_servico, status=True).tempoServico
     hora_inicial = datetime.combine(data.date(), menor_hora)
     hora_final = datetime.combine(data.date(), maior_hora)
     horarios_divididos = dividir_horarios(hora_inicial, hora_final, tempo_servico)

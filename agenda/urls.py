@@ -14,4 +14,6 @@ urlpatterns = [
     path('servico/', views.servico, name='servico'),
     path('agenda/', views.agenda, name='agenda'),
     path('gerarAgendamento/', views.gerarAgendamento, name='gerarAgendamento'),
+    path('cadastrar-servico/', views.cadastrarServico, name='cadastrarServico'),
+    path('deletar-servico/', views.deletarServico, name='deletarServico'),
 ]

@@ -40,7 +40,8 @@ class Servico(models.Model):
     descricao = models.CharField(max_length=200, blank=True, null=True)
     valor = models.FloatField()
     tempoServico = models.TimeField()
-    intervalo = models.TimeField()
+    intervalo = models.TimeField(blank=True, null=True)
+    status = models.BooleanField(default=True)
     empresa = models.ForeignKey(Empresa, on_delete=models.SET_NULL, blank=True, null=True)
     
 class ServicoFuncionario(models.Model):

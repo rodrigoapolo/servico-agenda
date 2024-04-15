@@ -1,0 +1,85 @@
+{% extends 'global/base.html' %}
+{% load static %}
+{% block 'head' %}
+<link href="{% static 'agenda/css/login.css' %}" rel="stylesheet">
+{% endblock 'head' %}
+
+{% block 'titulo' %}Meu Serviço{% endblock 'titulo' %}
+
+{% block 'conteudo' %}
+{% include 'global/menu.html' %}
+<section class="p-0 bg-secondary-subtle">
+    <div class="container pb-3 h-100 bg-white">
+        <h1 class="text-center pt-2">Cadastra Serviço</h1>
+        <form action="{% url 'agenda:cadastrarServico' %}" method="POST" class="row g-3 w-50 m-auto p-3 shadow" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="col-md-6">
+                <label for="nome" class="form-label">Nome</label>
+                <input type="text" class="form-control" name="nome" id="nome" placeholder="Nome" required>
+            </div>
+            <div class="col-md-6">
+                <label for="valor" class="form-label">Valor</label>
+                <input type="text" class="form-control" id="valor" name="valor" placeholder="Valor" required>
+            </div>
+            <div class="col-6">
+                <label for="tempoServico" class="form-label">Tempo Serviço</label>
+                <input type="time" class="form-control" id="tempoServico" name="tempoServico" placeholder="Tempo Serviço" required>
+            </div>
+            <div class="col-6">
+                <label for="empresa" class="form-label">Empresa</label>
+                <select class="form-select" name="idempresa" aria-label="Default select example">
+                    <option disabled selected>Selecione um Empresa</option>
+                    {% if empresas %}
+                        {% for empresa in empresas %}
+                            <option value="{{ empresa.pk }}">{{ empresa.nome }}</option>
+                        {% endfor %}     
+                    {% endif %}
+                  </select>
+            </div>
+            <div class="col-md-12">
+                <label for="descricao" class="form-label">Descrição</label>
+                <textarea class="form-control" id="descricao" name="descricao" rows="5"></textarea>
+            </div>
+
+            <div class="col-12 d-flex justify-content-center">
+                <button type="submit" class="btn btn-primary">Cadastra</button>
+            </div>
+        </form>
+    </div>
+    <div class="container pt-4 h-100 bg-white">
+        <h1 class="ms-3">Meu Serviço</h1>
+        <div class="d-flex justify-content-center flex-wrap">
+            {% if servicos %}
+                {% for servico in servicos %}
+                    <div class="card mb-3">
+                        <div class="row g-0">
+                            <div class="col-md-4">
+                                {% if servico.empresa.foto %}
+                                <img src="{{ servico.empresa.foto.url }}" class="img-fluid rounded-start" alt="...">
+                                {% endif %}
+                            </div>
+                            <div class="col-md-8">
+                                <div class="card-body">
+                                    <h5 class="card-title">{{ servico.nome }}</h5>
+                                    <p class="card-text">{{ servico.descricao }}</p>
+                                    <p class="card-text">Valor: R${{ servico.valor }}</p>
+                                    <p class="card-text">Tempo Serviço: {{ servico.tempoServico }}h</p>
+                                    <p class="card-text"><small class="text-body-secondary">{{ servico.empresa.nome }}</small></p>
+
+                                    <form action="{% url 'agenda:deletarServico' %}" method="POST">
+                                        {% csrf_token %}
+                                        <div class="col-12 d-flex justify-content-end">
+                                            <input type="text" id="idServico" name="idServico" value="{{ servico.pk }}" class="d-none">
+                                            <button type="submit" class="btn btn-danger">Deletar</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}     
+            {% endif %}
+        </div>
+    </div>
+</section>
+{% endblock 'conteudo' %}
