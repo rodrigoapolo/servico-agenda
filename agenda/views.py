@@ -102,8 +102,12 @@ def cadastrarFuncionario(request):
         password = request.POST['password']
         idEmpresa = request.POST.getlist('idEmpresa')
         idServico = request.POST.getlist('idServico')
+        idDias = request.POST.getlist('idDia')
+        horaInicial = request.POST['horaInicial']
+        horaFinal = request.POST['horaFinal']
+        foto = request.FILES['foto']  
        
-        funcionario = models.User.objects.create_user(username=username, email=email, password=password, tipo='F')
+        funcionario = models.User.objects.create_user(username=username, email=email, password=password, foto=foto, tipo='F')
         # Supondo que idEmpresa seja uma lista de IDs de empresas
         for empresa_id in idEmpresa:
             models.EmpresaFuncionario.objects.create(empresa_id=empresa_id, funcionario_id=funcionario.pk)
@@ -111,6 +115,9 @@ def cadastrarFuncionario(request):
         # Supondo que idServico seja uma lista de IDs de serviços
         for servico_id in idServico:
             models.ServicoFuncionario.objects.create(servico_id=servico_id, funcionario_id=funcionario.pk)
+            
+        for dia_id in idDias:
+            models.DiaSemanaFuncionario.objects.create(dia_id=dia_id, funcionario_id=funcionario.pk, horaInicial=horaInicial, horaFinal=horaFinal)
 
         print("="*50)
         print(username)
@@ -120,14 +127,23 @@ def cadastrarFuncionario(request):
         print(idServico)
         print("="*50)
                     
-
+    dias = models.Dia.objects.all()
     empresas = models.Empresa.objects.filter(gerente_id=request.user.pk)
     servicos = models.Servico.objects.filter(empresa_id__in=empresas, status=True)
     funcionarios = models.EmpresaFuncionario.objects.filter(empresa_id__in=empresas)
     return render(request, 'agenda/cadastrar-funcionario.html', {
         'empresas': empresas,
+        'dias': dias,
         'servicos': servicos,
         'funcionarios': funcionarios})
+
+
+def deletarFuncionario(request):
+    if request.method == 'POST':
+        idServico = request.POST['idServico'] 
+        models.Servico.objects.filter(pk=idServico).update(status=False)
+        
+    return redirect('agenda:cadastrarFuncionario')
 
 @login_required(login_url='agenda:login')
 def perfil(request):

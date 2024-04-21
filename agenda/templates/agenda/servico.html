@@ -16,12 +16,12 @@
         <h1 class="text-center pt-2">{{ empresa.nome }}</h1>
         <h5 class="text-center p-2">{{ empresa.numero }}, {{ empresa.cep }}.</h5>
 
-        <img src="{{ empresa.foto }}" class="rounded mx-auto d-block" alt="...">
+        <img src="{{ empresa.foto.url }}" class="rounded mx-auto d-block" alt="...">
 
-        <div class="mt-3 ">
+        <div class="mt-3 d-flex justify-content-center flex-wrap">
 
             {% for servico in servicos %}
-                <div class="card text-center m-auto mt-3">
+                <div class="card text-center m-auto mt-3"  style="width: 18rem;">
                     <div class="card-body">
                         <h5 class="card-title">{{ servico.nome }}</h5>
                         <p class="card-text">{{ servico.descricao }}</p>

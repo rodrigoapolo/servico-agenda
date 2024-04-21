@@ -9,7 +9,7 @@ class User(AbstractUser):
     username = models.CharField(max_length=150, blank=True, null=True)
     email = models.EmailField(unique=True)
     tipo = models.CharField(max_length=1, choices=TIPO_ADM_CHOICES)
-    
+    foto = models.ImageField(upload_to='imagens/', null=True, blank=True)
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['password']
     
@@ -42,6 +42,7 @@ class Servico(models.Model):
     tempoServico = models.TimeField()
     intervalo = models.TimeField(blank=True, null=True)
     status = models.BooleanField(default=True)
+    foto = models.ImageField(upload_to='imagens/', null=True, blank=True)
     empresa = models.ForeignKey(Empresa, on_delete=models.SET_NULL, blank=True, null=True)
     
 class ServicoFuncionario(models.Model):

@@ -37,6 +37,34 @@
                 {% endif %}
             </div>
             <div class="col-12">
+                {% if dias %}
+                <div>
+                    <label class="form-label">Selecionar Dias:</label>
+                </div>
+                    {% for dia in dias %}
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="checkbox" name="idDia" id="iddia{{ dia.pk }}" value="{{ dia.pk }}">
+                            <label class="form-check-label" for="idDia{{ dia.pk }}">{{ dia.nome }}</label>
+                        </div>
+                    {% endfor %}     
+                {% endif %}
+            </div>
+            <div class="col-12">
+            
+                <div>
+                    <label class="form-label">Selecionar Horario:</label>
+                </div>
+                 
+                       
+                <label class="" for="">Inicio</label>
+                <input class="" type="time" name="horaInicial" id="horaInicial" required>
+                                       
+                <label class="" for="">Final</label>
+                <input class="" type="time" name="horaFinal" id="horaFinal" required>
+                    
+              
+            </div>
+            <div class="col-12">
                 {% if servicos %}
                 <div>
                     <label class="form-label">Selecionar Serviços:</label>
@@ -49,6 +77,15 @@
                     {% endfor %}     
                 {% endif %}
             </div>
+
+            <div class="col-md-12">
+                <div class="input-group mb-3">
+                    <label class="input-group-text" for="foto">Foto</label>
+                    <input type="file" class="form-control" name="foto" id="foto" required>
+                </div>
+
+
+            </div>
             <div class="col-12 d-flex justify-content-center">
                 <button type="submit" class="btn btn-primary">Cadastra</button>
             </div>
@@ -59,11 +96,11 @@
         <div class="d-flex justify-content-center flex-wrap">
             {% if funcionarios %}
                 {% for funcionario in funcionarios %}
-                    <div class="card mb-3">
+                    <div class="card mb-3" style="width: 50rem;">
                         <div class="row g-0">
                             <div class="col-md-4">
-                                {% if funcionario.empresa.foto %}
-                                <img src="{{ funcionario.empresa.foto.url }}" class="img-fluid rounded-start" alt="...">
+                                {% if funcionario.funcionario.foto %}
+                                <img src="{{ funcionario.funcionario.foto.url }}" class="img-fluid rounded-start" alt="...">
                                 {% endif %}
                             </div>
                             <div class="col-md-8">
@@ -73,10 +110,10 @@
 
                                     <p class="card-text"><small class="text-body-secondary">{{ funcionario.empresa.nome }}</small></p>
 
-                                    <form action="{% url 'agenda:deletarServico' %}" method="POST">
+                                    <form action="{% url 'agenda:deletarFuncionario' %}" method="POST">
                                         {% csrf_token %}
                                         <div class="d-flex justify-content-end">
-                                            <input type="text" id="idServico" name="idServico" value="{{ servico.pk }}" class="d-none">
+                                            <input type="text" id="idFuncionario" name="idFuncionario" value="{{ funcionario.funcionario.pk }}" class="d-none">
                                             <button type="submit" class="btn btn-danger">Deletar</button>
                                         </div>
                                     </form>
