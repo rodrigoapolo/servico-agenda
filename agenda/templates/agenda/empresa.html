@@ -15,30 +15,37 @@
             {% csrf_token %}
             <div class="col-md-6">
                 <label for="nome" class="form-label">Nome</label>
-                <input type="text" class="form-control is-invalid" name="nome" id="nome" placeholder="Nome" required>
+                <input type="text" class="form-control" name="nome" id="nome" placeholder="Nome" value="{{ empresaupdate.nome }}" required>
             </div>
             <div class="col-md-6">
                 <label for="cep" class="form-label">CEP</label>
-                <input type="text" class="form-control" id="cep" name="cep" placeholder="CEP" required>
+                <input type="text" class="form-control" id="cep" name="cep" placeholder="CEP" value="{{ empresaupdate.cep }}" required>
+            </div>
+            <div class="col-md-12">
+                <label for="logradouro" class="form-label">Logradouro</label>
+                <input type="text" class="form-control" id="logradouro" name="logradouro" placeholder="Logradouro" value="{{ empresaupdate.logradouro }}" required>
             </div>
             <div class="col-6">
                 <label for="numero" class="form-label">Numero</label>
-                <input type="text" class="form-control" id="numero" name="numero" placeholder="Numero" required>
+                <input type="text" class="form-control" id="numero" name="numero" placeholder="Numero" value="{{ empresaupdate.numero }}" required>
             </div>
             <div class="col-6">
                 <label for="complemento" class="form-label">Complemento</label>
-                <input type="text" class="form-control" id="complemento" name="complemento" placeholder="Complemento">
+                <input type="text" class="form-control" id="complemento" name="complemento" value="{{ empresaupdate.complemento }}" placeholder="Complemento">
+            </div>
+            <div class="col-md-12">
+                <label for="descricao" class="form-label">Descrição</label>
+                <textarea class="form-control" id="descricao" name="descricao" rows="5"></textarea>
             </div>
             <div class="col-md-12">
                 <div class="input-group mb-3">
                     <label class="input-group-text" for="foto">Foto</label>
                     <input type="file" class="form-control" name="foto" id="foto" required>
                 </div>
-
-
             </div>
 
             <div class="col-12 d-flex justify-content-center">
+                <input type="text" class="d-none" id="id_empresaupdate" name="id_empresaupdate" value="{{ empresaupdate.pk }}">
                 <button type="submit" class="btn btn-primary">Cadastra</button>
             </div>
         </form>
@@ -59,9 +66,25 @@
                                 <div class="card-body">
                                     <h5 class="card-title">{{ empresa.nome }}</h5>
                                     <p class="card-text">{{ empresa.descricao }}</p>
+                                    <p class="card-text">Logradouro: {{ empresa.logradouro }}</p>
                                     <p class="card-text">CEP: {{ empresa.cep }}</p>
                                     <p class="card-text">Número: {{ empresa.numero }}</p>
-                                    <p class="card-text"><small class="text-body-secondary">Last updated 3 mins ago</small></p>
+                                    <div class="d-flex justify-content-end"> 
+                                    <form class="pe-2" action="{% url 'agenda:deletarEmpresa' %}" method="POST">
+                                        {% csrf_token %}
+                                        <div class="col-12 d-flex justify-content-end">
+                                            <input type="text" id="idempresa" name="idempresa" value="{{ empresa.pk }}" class="d-none">
+                                            <button type="submit" class="btn btn-danger">Deletar</button>
+                                        </div>
+                                    </form>
+                                    <form action="{% url 'agenda:empresa' %}" method="GET">
+                                        {% csrf_token %}
+                                        <div class="col-12 d-flex justify-content-end">
+                                            <input type="text" id="id_empresa" name="id_empresa" value="{{ empresa.pk }}" class="d-none">
+                                            <button type="submit" class="btn btn-primary">Editar</button>
+                                        </div>
+                                    </form>
+                                </div>
                                 </div>
                             </div>
                         </div>

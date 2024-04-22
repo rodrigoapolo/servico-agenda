@@ -40,7 +40,11 @@
                 <label for="descricao" class="form-label">Descrição</label>
                 <textarea class="form-control" id="descricao" name="descricao" rows="5"></textarea>
             </div>
-
+            <div class="col-md-12">
+                <div class="input-group mb-3">
+                    <label class="input-group-text" for="foto">Foto</label>
+                    <input type="file" class="form-control" name="foto" id="foto" required>
+            </div>
             <div class="col-12 d-flex justify-content-center">
                 <button type="submit" class="btn btn-primary">Cadastra</button>
             </div>
@@ -51,11 +55,11 @@
         <div class="d-flex justify-content-center flex-wrap">
             {% if servicos %}
                 {% for servico in servicos %}
-                    <div class="card mb-3">
+                    <div class="card m-2 w-60" style="width: 50%;">
                         <div class="row g-0">
-                            <div class="col-md-4">
-                                {% if servico.empresa.foto %}
-                                <img src="{{ servico.empresa.foto.url }}" class="img-fluid rounded-start" alt="...">
+                            <div class="col-md-4 d-flex justify-content-center">
+                                {% if servico.foto.url %}
+                                <img src="{{ servico.foto.url }}" class="img-fluid rounded-start" alt="...">
                                 {% endif %}
                             </div>
                             <div class="col-md-8">
@@ -65,14 +69,22 @@
                                     <p class="card-text">Valor: R${{ servico.valor }}</p>
                                     <p class="card-text">Tempo Serviço: {{ servico.tempoServico }}h</p>
                                     <p class="card-text"><small class="text-body-secondary">{{ servico.empresa.nome }}</small></p>
-
-                                    <form action="{% url 'agenda:deletarServico' %}" method="POST">
+                                    <div class="d-flex justify-content-end"> 
+                                    <form class="pe-2" action="{% url 'agenda:deletarServico' %}" method="POST">
                                         {% csrf_token %}
                                         <div class="col-12 d-flex justify-content-end">
                                             <input type="text" id="idServico" name="idServico" value="{{ servico.pk }}" class="d-none">
                                             <button type="submit" class="btn btn-danger">Deletar</button>
                                         </div>
                                     </form>
+                                    <form action="{% url 'agenda:empresa' %}" method="GET">
+                                        {% csrf_token %}
+                                        <div class="col-12 d-flex justify-content-end">
+                                            <input type="text" id="id_empresa" name="id_empresa" value="{{ empresa.pk }}" class="d-none">
+                                            <button type="submit" class="btn btn-primary">Editar</button>
+                                        </div>
+                                    </form>
+                                </div>
                                 </div>
                             </div>
                         </div>

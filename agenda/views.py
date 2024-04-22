@@ -2,6 +2,7 @@ from http import client
 import imp
 from pydoc import cli
 from re import T
+import re
 import stat
 from traceback import print_tb
 from django.shortcuts import render, redirect
@@ -32,7 +33,7 @@ def login_in(request):
                 print(request.session['id_empresa'])
                 # print(user.pk)
                 # print(user.tipo)
-                return redirect('agenda:home')
+                return redirect('agenda:perfil')
     else:
         form = AuthenticationForm()
     return render(request, 'agenda/login.html', {'form': form})
@@ -44,7 +45,7 @@ def logout_view(request):
 @login_required(login_url='agenda:login')
 def home(request):
     empresa = models.Empresa.objects.get(pk=request.session['id_empresa'])
-    empresas = models.Empresa.objects.filter(gerente_id=empresa.gerente_id)
+    empresas = models.Empresa.objects.filter(gerente_id=empresa.gerente_id, status=True)
 
     return render(request, 'agenda/home.html',{'empresas': empresas})
 
@@ -128,7 +129,7 @@ def cadastrarFuncionario(request):
         print("="*50)
                     
     dias = models.Dia.objects.all()
-    empresas = models.Empresa.objects.filter(gerente_id=request.user.pk)
+    empresas = models.Empresa.objects.filter(gerente_id=request.user.pk, status=True)
     servicos = models.Servico.objects.filter(empresa_id__in=empresas, status=True)
     funcionarios = models.EmpresaFuncionario.objects.filter(empresa_id__in=empresas)
     return render(request, 'agenda/cadastrar-funcionario.html', {
@@ -195,31 +196,59 @@ def perfil(request):
     
 @login_required(login_url='agenda:login')
 def empresa(request):
+    empresaupdate = None
+    if request.GET.get('id_empresa', None) is not None:
+        empresaupdate = models.Empresa.objects.get(pk=request.GET['id_empresa'], status=True)
+            
     if request.method == 'POST':
         nome = request.POST['nome']
         cep = request.POST['cep']
         numero = request.POST['numero']
+        descricao = request.POST['descricao']
         complemento = request.POST['complemento']
+        logradouro = request.POST['logradouro']
         foto = request.FILES['foto']  
         
-        models.Empresa.objects.create(
-            nome=nome,
-            cep=cep,
-            numero=numero,
-            complemento=complemento,
-            foto=foto,
-            gerente_id=request.user.pk
-        )
+        if request.POST.get('id_empresaupdate', None) is "":
+            models.Empresa.objects.create(
+                nome=nome,
+                logradouro=logradouro,
+                cep=cep,
+                descricao=descricao,
+                numero=numero,
+                complemento=complemento,
+                foto=foto,
+                gerente_id=request.user.pk
+            )
+        else:
+            models.Empresa.objects.update_or_create(
+                pk=request.POST['id_empresaupdate'],
+                defaults={
+                'nome':nome,
+                'logradouro':logradouro,
+                'cep':cep,
+                'descricao':descricao,
+                'numero':numero,
+                'complemento':complemento,
+                'foto':foto,
+                'gerente_id':request.user.pk}
+            )
         
+    
+    empresas = models.Empresa.objects.filter(gerente_id=request.user.pk, status=True)
+    return render(request, 'agenda/empresa.html', {'empresas': empresas, 'empresaupdate': empresaupdate})
+    
+def deletarEmpresa(request):
+    if request.method == 'POST':
+        idEmpresa = request.POST['idempresa'] 
+        models.Empresa.objects.filter(pk=idEmpresa).update(status=False)
         
-    empresas = models.Empresa.objects.filter(gerente_id=request.user.pk)
-    return render(request, 'agenda/empresa.html', {'empresas': empresas})
-        
+    return redirect('agenda:empresa')    
 
 def servico(request):
     if request.method == 'POST':
         id_empresa = request.POST['id_empresa'] 
-        empresa = models.Empresa.objects.get(pk=id_empresa)
+        empresa = models.Empresa.objects.get(pk=id_empresa, status=True)
         servicos = models.Servico.objects.filter(empresa_id=id_empresa, status=True)
         return render(request, 'agenda/servico.html', {'servicos': servicos, 'empresa': empresa})
     return redirect('agenda:home')
@@ -234,16 +263,18 @@ def cadastrarServico(request):
         
         valor = valor.replace(',', '.')
         
-        models.Servico.objects.create(
-            nome=nome,
-            valor=valor,
-            tempoServico=tempoServico,
-            descricao=descricao,
-            empresa_id=idempresa
+        models.Servico.objects.update_or_create(
+            pk=request.POST['idservico'],
+            defaults={
+            'nome':nome,
+            'valor':valor,
+            'tempoServico':tempoServico,
+            'descricao':descricao,
+            'empresa_id':idempresa}
         )
         
     
-    empresas = models.Empresa.objects.filter(gerente_id=request.user.pk)
+    empresas = models.Empresa.objects.filter(gerente_id=request.user.pk, status=True)
     servicos = models.Servico.objects.filter(empresa_id__in=empresas, status=True)
     return render(request, 'agenda/cadastrar-servico.html', {'empresas': empresas, 'servicos': servicos})
 
@@ -268,27 +299,6 @@ def agenda(request):
         
         lista_funcionarios = models.User.objects.filter(pk__in=funcionarios)
 
-        agendamentos = models.Agenda.objects.filter(
-            funcionario__id__in=funcionarios,
-            data_inicio__date=data.date()).values_list('data_inicio', 'data_final')
-
-        horarios_trabalho = models.DiaSemanaFuncionario.objects.filter(
-            funcionario__pk__in=funcionarios,  
-            dia = data.weekday()+1
-        ).values_list('horaInicial', 'horaFinal')
-        
-        menor_hora, maior_hora = encontrar_menor_maior_hora(horarios_trabalho)
-        
-        tempo_servico = models.Servico.objects.get(pk=id_servico, status=True).tempoServico
-                
-        # horário de início e o horário final
-        hora_inicial = datetime.combine(datetime.today(), menor_hora)
-        hora_final = datetime.combine(datetime.today(), maior_hora)
-
-        # Lista para armazenar os intervalos de uma hora
-        horarios_divididos = dividir_horarios(hora_inicial, hora_final, tempo_servico)
-            
-        horarios_divididos_nao_ocupados = filtrar_horarios_nao_ocupados(horarios_divididos, agendamentos)
         
         lista_agendamentos = []
         for funcionario in lista_funcionarios:
@@ -297,7 +307,6 @@ def agenda(request):
         return render(request, 'agenda/agenda.html', {
             'servico': servico,
             'lista_funcionarios': lista_funcionarios,
-            'horarios_divididos_nao_ocupados': horarios_divididos_nao_ocupados,
             'lista_agendamentos': lista_agendamentos,
             'data': request.POST['data']
             })        

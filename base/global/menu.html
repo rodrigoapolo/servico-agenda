@@ -13,6 +13,7 @@
       </div>
       <div class="offcanvas-body">
         <ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
+          {% if user.tipo == 'C' %}
           <li class="nav-item">
             {% if request.path == "/home/" %}
             <a class="nav-link active" aria-current="page" href="{% url 'agenda:home' %}">Home</a>
@@ -20,6 +21,7 @@
             <a class="nav-link" aria-current="page" href="{% url 'agenda:home' %}">Home</a>
             {% endif %}
           </li>
+          {% endif %}
           <li class="nav-item">
             {% if request.path == "/perfil/" %}
             <a class="nav-link active" href="{% url 'agenda:perfil' %}">Perfil</a>
@@ -29,18 +31,36 @@
           </li>
           {% if user.tipo == 'G' %}
             <li class="nav-item">
+              {% if request.path == "/empresa/" %}
+              <a class="nav-link active" aria-current="page" href="{% url 'agenda:empresa' %}">Empresa</a>
+              {% else %}
               <a class="nav-link" aria-current="page" href="{% url 'agenda:empresa' %}">Empresa</a>
+              {% endif %}
             </li>
             <li class="nav-item">
+              {% if request.path == "/cadastrar-funcionario/" %}
+              <a class="nav-link active" aria-current="page" href="{% url 'agenda:cadastrarFuncionario' %}">Funcionarios</a>
+              {% else %}
               <a class="nav-link" aria-current="page" href="{% url 'agenda:cadastrarFuncionario' %}">Funcionarios</a>
+              {% endif %}
             </li>
             <li class="nav-item">
+              {% if request.path == "/cadastrar-servico/" %}
+              <a class="nav-link active" aria-current="page" href="{% url 'agenda:cadastrarServico' %}">Servico</a>
+              {% else %}
               <a class="nav-link" aria-current="page" href="{% url 'agenda:cadastrarServico' %}">Servico</a>
+              {% endif %}
             </li>
           {% endif %}
+          {% if user.tipo == 'F' %}
           <li class="nav-item">
-            <a class="nav-link" aria-current="page" href="#">Historico Agendamento</a>
+            {% if request.path == "/cadastrar-servico/" %}
+            <a class="nav-link active" aria-current="page" href="#">Minha Agendamento</a>
+            {% else %}
+            <a class="nav-link" aria-current="page" href="#">Minha Agendamento</a>
+            {% endif %}
           </li>
+          {% endif %}
           <li class="nav-item">
             <a class="nav-link" aria-current="page" href="{% url 'agenda:logout_view' %}">Sair</a>
           </li>

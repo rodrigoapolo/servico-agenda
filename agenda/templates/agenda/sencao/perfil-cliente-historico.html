@@ -6,7 +6,7 @@
                 <div class="card mb-3" style="max-width: 540px;">
                     <div class="row g-0">
                         <div class="col-md-4 d-flex justify-content-center">
-                            <img src="{{ agenda.servico.empresa.foto }}" class="img-fluid" alt="...">
+                            <img src="{{ agenda.servico.foto.url }}" class="img-fluid" alt="...">
                         </div>
                         <div class="col-md-8">
                             <div class="card-body">
@@ -31,7 +31,7 @@
             <div class="card mb-3" style="max-width: 540px;">
                 <div class="row g-0">
                     <div class="col-md-4 d-flex justify-content-center">
-                        <img src="{{ agenda.servico.empresa.foto }}" class="img-fluid" alt="...">
+                        <img src="{{ agenda.servico.foto.url }}" class="img-fluid" alt="...">
                     </div>
                     <div class="col-md-8">
                         <div class="card-body">
@@ -47,7 +47,5 @@
             </div>
         {% endfor %}     
     {% endif %}
-      
-
     </div>
 </div>

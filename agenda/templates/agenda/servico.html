@@ -13,8 +13,8 @@
         <form action="{% url 'agenda:home' %}" method="get">
             <button type="submit" class="btn btn-primary">Voltar</button>
         </form>
-        <h1 class="text-center pt-2">{{ empresa.nome }}</h1>
-        <h5 class="text-center p-2">{{ empresa.numero }}, {{ empresa.cep }}.</h5>
+        <h1 class="text-center pt-2">{{ empresa.nome }}</h1> 
+        <h5 class="text-center p-2">{{ empresa.logradouro }} {{ empresa.numero }}, {{ empresa.cep }}.</h5>
 
         <img src="{{ empresa.foto.url }}" class="rounded mx-auto d-block" alt="...">
 

@@ -17,5 +17,6 @@ urlpatterns = [
     path('cadastrar-servico/', views.cadastrarServico, name='cadastrarServico'),
     path('cadastrar-funcionario/', views.cadastrarFuncionario, name='cadastrarFuncionario'),
     path('deletar-servico/', views.deletarServico, name='deletarServico'),
+    path('deletar-empresa/', views.deletarEmpresa, name='deletarEmpresa'),
     path('deletar-funcionario/', views.deletarFuncionario, name='deletarFuncionario'),
 ]
