@@ -254,29 +254,48 @@ def servico(request):
     return redirect('agenda:home')
 
 def cadastrarServico(request):
+    servicoupdate = None
+    if request.GET.get('id_servico', None) is not None:
+        servicoupdate = models.Servico.objects.get(pk=request.GET['id_servico'], status=True)
+        
     if request.method == 'POST':
         nome = request.POST['nome'] 
         valor = request.POST['valor'] 
         tempoServico = request.POST['tempoServico'] 
         idempresa = request.POST['idempresa'] 
         descricao = request.POST['descricao'] 
+        foto = request.FILES['foto']
         
         valor = valor.replace(',', '.')
         
-        models.Servico.objects.update_or_create(
-            pk=request.POST['idservico'],
-            defaults={
-            'nome':nome,
-            'valor':valor,
-            'tempoServico':tempoServico,
-            'descricao':descricao,
-            'empresa_id':idempresa}
-        )
+        if request.POST.get('id_servicoupdate', None) is "":
+            models.Servico.objects.create(
+                nome=nome,
+                valor=valor,
+                tempoServico=tempoServico,
+                descricao=descricao,
+                foto=foto,
+                empresa_id=idempresa
+            )
+        else:
+            models.Servico.objects.update_or_create(
+                pk=request.POST['id_servicoupdate'],
+                defaults={
+                'nome':nome,
+                'valor':valor,
+                'tempoServico':tempoServico,
+                'descricao':descricao,
+                'foto':foto,
+                'empresa_id':idempresa}
+            )
         
     
     empresas = models.Empresa.objects.filter(gerente_id=request.user.pk, status=True)
     servicos = models.Servico.objects.filter(empresa_id__in=empresas, status=True)
-    return render(request, 'agenda/cadastrar-servico.html', {'empresas': empresas, 'servicos': servicos})
+    return render(request, 'agenda/cadastrar-servico.html', {
+        'empresas': empresas,
+        'servicos': servicos,
+        'servicoupdate': servicoupdate})
 
 def deletarServico(request):
     if request.method == 'POST':
