@@ -10,6 +10,7 @@ class User(AbstractUser):
     email = models.EmailField(unique=True)
     tipo = models.CharField(max_length=1, choices=TIPO_ADM_CHOICES)
     foto = models.ImageField(upload_to='imagens/', null=True, blank=True)
+    status = models.BooleanField(default=True)
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['password']
     

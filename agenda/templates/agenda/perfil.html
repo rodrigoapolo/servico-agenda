@@ -89,13 +89,13 @@
 
             </form>
             <div class="w-50 p-5">
-                <h2>Historico Agendamento</h2>
+                <h2>Historico Serviço</h2>
                 {% if agendaHistorico %}
                     {% for agenda in agendaHistorico %}
                         <div class="card mb-3" style="max-width: 540px;">
                             <div class="row g-0">
                                 <div class="col-md-4 d-flex justify-content-center">
-                                    <img src="{{ agenda.servico.empresa.foto }}" class="img-fluid" alt="...">
+                                    <img src="{{ agenda.servico.foto.url }}" class="img-fluid" alt="...">
                                 </div>
                                 <div class="col-md-8">
                                     <div class="card-body">
@@ -110,9 +110,7 @@
                             </div>
                         </div>
                     {% endfor %}      
-                    <div class="d-flex justify-content-end mb-4 ">
-                        <a href="{% url 'agenda:login' %}">Ver mais...</a>
-                    </div>
+
                 {% endif %}
             </div>
         </div>

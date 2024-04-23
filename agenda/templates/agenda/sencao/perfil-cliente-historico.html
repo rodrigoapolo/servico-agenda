@@ -1,6 +1,6 @@
 <div class="container h-100 d-flex bg-white">
     <div class="w-50 p-5">
-        <h2>Agendamento Marcado</h2>
+        <h2>Serviço Marcado</h2>
         {% if agendaMarcada %}
             {% for agenda in agendaMarcada %}
                 <div class="card mb-3" style="max-width: 540px;">
@@ -16,6 +16,14 @@
                                 <p class="card-text"><small class="text-body-secondary">{{ agenda.data_inicio|date:"l, d F Y" }} ás {{ agenda.data_inicio|time:"H:i" }} 
                                     as {{ agenda.data_final|time:"H:i" }}</small>
                                 </p>
+                                <form class="pe-2" action="{% url 'agenda:cancelarAgendamento' %}" method="POST">
+                                    {% csrf_token %}
+                                    <div class="d-flex justify-content-end">
+                                        <input type="text" id="idAgenda" name="idAgenda" value="{{ agenda.pk }}" class="d-none">
+                                        <input type="text" id="path" name="path" value="{{ request.path }}" class="d-none">
+                                        <button type="submit" class="btn btn-danger">Cancelar</button>
+                                    </div>
+                                </form>
                             </div>
                         </div>
                     </div>
@@ -25,7 +33,7 @@
     </div>
 
     <div class="w-50 p-5">
-        <h2>Agendamento Programado</h2>
+        <h2>Serviço Programado</h2>
         {% if agendaProgramada %}
         {% for agenda in agendaProgramada %}
             <div class="card mb-3" style="max-width: 540px;">
@@ -41,6 +49,14 @@
                             <p class="card-text"><small class="text-body-secondary">{{ agenda.data_inicio|date:"l, d F Y" }} ás {{ agenda.data_inicio|time:"H:i" }} 
                                 as {{ agenda.data_final|time:"H:i" }}</small>
                             </p>
+                            <form class="pe-2" action="{% url 'agenda:cancelarAgendamento' %}" method="POST">
+                                {% csrf_token %}
+                                <div class="d-flex justify-content-end">
+                                    <input type="text" id="idAgenda" name="idAgenda" value="{{ agenda.pk }}" class="d-none">
+                                    <input type="text" id="path" name="path" value="{{ request.path }}" class="d-none">
+                                    <button type="submit" class="btn btn-danger">Cancelar</button>
+                                </div>
+                            </form>
                         </div>
                     </div>
                 </div>

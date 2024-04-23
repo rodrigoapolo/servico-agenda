@@ -1,10 +1,4 @@
-from http import client
-import imp
-from pydoc import cli
-from re import T
-import re
-import stat
-from traceback import print_tb
+from turtle import mode
 from django.shortcuts import render, redirect
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth import authenticate, login, update_session_auth_hash
@@ -13,7 +7,7 @@ from django.contrib.auth.decorators import login_required
 from datetime import datetime, timedelta
 from agenda.util import encontrar_menor_maior_hora, dividir_horarios, filtrar_horarios_nao_ocupados
 from agenda import models
-from django.utils import timezone
+from django.urls import resolve
 
 def index(request):
     return render(request, 'agenda/index.html')
@@ -125,7 +119,7 @@ def cadastrarFuncionario(request):
     dias = models.Dia.objects.all()
     empresas = models.Empresa.objects.filter(gerente_id=request.user.pk, status=True)
     servicos = models.Servico.objects.filter(empresa_id__in=empresas, status=True)
-    funcionarios = models.EmpresaFuncionario.objects.filter(empresa_id__in=empresas)
+    funcionarios = models.EmpresaFuncionario.objects.filter(empresa_id__in=empresas, funcionario__status=True)
     return render(request, 'agenda/cadastrar-funcionario.html', {
         'empresas': empresas,
         'dias': dias,
@@ -163,7 +157,7 @@ def updateFuncionario(request):
         return redirect('agenda:cadastrarFuncionario')
 
     idFuncionario = request.GET['id_funcionario'] 
-    funcionario = models.User.objects.get(pk=idFuncionario)
+    funcionario = models.User.objects.get(pk=idFuncionario, status=True)
     
     diasFun = models.DiaSemanaFuncionario.objects.filter(funcionario_id=funcionario.pk)
     diasFunHora = models.DiaSemanaFuncionario.objects.filter(funcionario_id=funcionario.pk).first()
@@ -187,8 +181,8 @@ def updateFuncionario(request):
     
 def deletarFuncionario(request):
     if request.method == 'POST':
-        idServico = request.POST['idServico'] 
-        models.Servico.objects.filter(pk=idServico).update(status=False)
+        idFuncionario = request.POST['idFuncionario'] 
+        models.User.objects.filter(pk=idFuncionario).update(status=False)
         
     return redirect('agenda:cadastrarFuncionario')
 
@@ -208,7 +202,7 @@ def perfil(request):
         
         status = True
         passwordErros = []
-        user = models.User.objects.get(pk=request.user.pk)
+        user = models.User.objects.get(pk=request.user.pk, status=True)
         
         if username != '':
             user.username = username
@@ -362,7 +356,7 @@ def agenda(request):
             servico_id=id_servico,
             funcionario__diasemanafuncionario__dia__pk=data.weekday()+1).values_list('funcionario', flat=True)
         
-        lista_funcionarios = models.User.objects.filter(pk__in=funcionarios)
+        lista_funcionarios = models.User.objects.filter(pk__in=funcionarios, status=True)
 
         
         lista_agendamentos = []
@@ -425,3 +419,12 @@ def gerarAgendamento(request):
         ).save()
         
     return redirect('agenda:perfil')
+
+def cancelarAgendamento(request):
+    if request.method == 'POST':
+        idAgenda = request.POST['idAgenda']
+        models.Agenda.objects.filter(pk=idAgenda).update(status='C')
+
+    if request.POST['path'] == '/perfil/':
+        return redirect('agenda:perfil')
+   
