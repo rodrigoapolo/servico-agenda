@@ -1,0 +1,116 @@
+{% extends 'global/base.html' %}
+{% load static %}
+{% block 'head' %}
+<link href="{% static 'agenda/css/login.css' %}" rel="stylesheet">
+{% endblock 'head' %}
+
+{% block 'titulo' %}Meus Funcionarios{% endblock 'titulo' %}
+
+{% block 'conteudo' %}
+{% include 'global/menu.html' %}
+<section class="p-0 bg-secondary-subtle">
+    <div class="container pb-3 h-100 bg-white">
+        <h1 class="text-center pt-2">Atualizar Funcionario</h1>
+        <form action="{% url 'agenda:updateFuncionario' %}" method="POST" class="row g-3 w-50 m-auto p-3 shadow" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="col-md-6">
+                <label for="nome" class="form-label">Nome</label>
+                <input type="text" class="form-control" name="nome" id="nome" placeholder="Nome" required
+                value="{{ funcionario.username }}">
+            </div>
+            <div class="col-md-6">
+                <label for="email" class="form-label">Email</label>
+                <input  value="{{ funcionario.email }}" type="email" class="form-control" id="email" name="email" placeholder="Email" required>
+            </div>
+            <div class="col-12">
+                <label class="form-label">Selecionar Empresas:</label>
+                {% if empresas %}
+                    {% for empresa in empresas %}
+                        <div class="form-check form-switch">                        
+                            <input class="form-check-input" type="checkbox" value="{{ empresa.pk }}" name="idEmpresa" role="switch" id="idEmpresa{{ empresa.pk }}">
+                            <label class="form-check-label" for="idEmpresa{{ empresa.pk }}">{{ empresa.nome }}</label>                           
+                        </div>
+                    {% endfor %}     
+                {% endif %}
+                {% if empresasFun %}
+                    {% for empresa in empresasFun %}
+                    <div class="form-check form-switch">                        
+                        <input class="form-check-input" type="checkbox" value="{{ empresa.empresa.pk }}" name="idEmpresa" role="switch" id="idEmpresa{{ empresa.empresa.pk }}" checked>
+                        <label class="form-check-label" for="idEmpresa{{ empresa.empresa.pk }}">{{ empresa.empresa.nome }}</label>                           
+                    </div>
+                    {% endfor %}   
+                {% endif %}
+            </div>
+            <div class="col-12">
+                <div>
+                    <label class="form-label">Selecionar Dias:</label>
+                </div>
+                {% if dias %}
+
+                    {% for dia in dias %}
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="checkbox" name="idDia" id="iddia{{ dia.pk }}" value="{{ dia.pk }}">
+                            <label class="form-check-label" for="idDia{{ dia.pk }}">{{ dia.nome }}</label>
+                        </div>
+                    {% endfor %}      
+                {% endif %}
+                {% if diasFun %}
+                    {% for dia in diasFun %}
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="checkbox" name="idDia" id="iddia{{ dia.dia.pk }}" value="{{ dia.dia.pk }}" checked>
+                            <label class="form-check-label" for="idDia{{ dia.dia.pk }}">{{ dia.dia.nome }}</label>
+                        </div>
+                    {% endfor %}   
+                {% endif %}
+            </div>
+            <div class="col-12">
+            
+                <div>
+                    <label class="form-label">Selecionar Horario:</label>
+                </div>
+                <label class="" for="">Inicio</label>
+                <input class="" type="time" name="horaInicial" id="horaInicial" value="{{ diasFunHora.horaInicial }}" required> 
+                <label class="" for="">Final</label>
+                <input class="" type="time" name="horaFinal" id="horaFinal" value="{{ diasFunHora.horaFinal }}"  required>
+              
+            </div>
+            <div class="col-12">
+                <div>
+                    <label class="form-label">Selecionar Serviços:</label>
+                </div>
+                {% if servicos %}
+
+                    {% for servico in servicos %}
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="checkbox" name="idServico" id="idServico{{ servico.pk }}" value="{{ servico.pk }}">
+                            <label class="form-check-label" for="idServico{{ servico.pk }}">{{ servico.nome }}</label>
+                        </div>
+                    {% endfor %}     
+
+                {% endif %}
+                {% if servicosFun %}
+                    {% for servico in servicosFun %}
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="checkbox" name="idServico" id="idServico{{ servico.servico.pk }}" value="{{ servico.servico.pk }}" checked>
+                            <label class="form-check-label" for="idServico{{ servico.servico.pk }}">{{ servico.servico.nome }}</label>
+                        </div>
+                    {% endfor %}    
+                {% endif %}
+            </div>
+
+            <div class="col-md-12">
+                <div class="input-group mb-3">
+                    <label class="input-group-text" for="foto">Foto</label>
+                    <input type="file" class="form-control" name="foto" id="foto" required>
+                </div>
+
+
+            </div>
+            <div class="col-12 d-flex justify-content-center">
+                <input type="text" id="id_funcionario" name="id_funcionario" value="{{ funcionario.pk }}" class="d-none">
+                <button type="submit" class="btn btn-primary">Atualizar</button>
+            </div>
+        </form>
+    </div>
+</section>
+{% endblock 'conteudo' %}

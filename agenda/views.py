@@ -119,14 +119,8 @@ def cadastrarFuncionario(request):
             
         for dia_id in idDias:
             models.DiaSemanaFuncionario.objects.create(dia_id=dia_id, funcionario_id=funcionario.pk, horaInicial=horaInicial, horaFinal=horaFinal)
-
-        print("="*50)
-        print(username)
-        print(email)
-        print(password)
-        print(idEmpresa)
-        print(idServico)
-        print("="*50)
+        
+        return redirect('agenda:cadastrarFuncionario')
                     
     dias = models.Dia.objects.all()
     empresas = models.Empresa.objects.filter(gerente_id=request.user.pk, status=True)
@@ -138,7 +132,59 @@ def cadastrarFuncionario(request):
         'servicos': servicos,
         'funcionarios': funcionarios})
 
+def updateFuncionario(request):
+    if request.method == 'POST':
+        username = request.POST['nome'] 
+        email = request.POST['email']
+        id_funcionario = request.POST['id_funcionario']
+        idEmpresa = request.POST.getlist('idEmpresa')
+        idServico = request.POST.getlist('idServico')
+        idDias = request.POST.getlist('idDia')
+        horaInicial = request.POST['horaInicial']
+        horaFinal = request.POST['horaFinal']
+        foto = request.FILES['foto']  
+       
+        funcionario, _ = models.User.objects.update_or_create(pk=id_funcionario, defaults= {'username':username, 'email':email, 'foto':foto})
+        # Supondo que idEmpresa seja uma lista de IDs de empresas
+        for empresa_id in idEmpresa:
+            models.EmpresaFuncionario.objects.update_or_create(
+                empresa_id=empresa_id, funcionario_id=funcionario.pk,
+                defaults={'empresa_id':empresa_id, 'funcionario_id':funcionario.pk})
 
+        # Supondo que idServico seja uma lista de IDs de serviços
+        for servico_id in idServico:
+            models.ServicoFuncionario.objects.update_or_create(
+                servico_id=servico_id, funcionario_id=funcionario.pk,
+                defaults={'servico_id':servico_id, 'funcionario_id':funcionario.pk})
+            
+        for dia_id in idDias:
+            models.DiaSemanaFuncionario.objects.update_or_create(dia_id=dia_id, funcionario_id=funcionario.pk, horaInicial=horaInicial, horaFinal=horaFinal)
+        
+        return redirect('agenda:cadastrarFuncionario')
+
+    idFuncionario = request.GET['id_funcionario'] 
+    funcionario = models.User.objects.get(pk=idFuncionario)
+    
+    diasFun = models.DiaSemanaFuncionario.objects.filter(funcionario_id=funcionario.pk)
+    diasFunHora = models.DiaSemanaFuncionario.objects.filter(funcionario_id=funcionario.pk).first()
+    dias = models.Dia.objects.all().exclude(id__in=diasFun.values_list('dia_id', flat=True))
+    
+    empresasFun =  models.EmpresaFuncionario.objects.filter(funcionario_id=funcionario.pk)
+    empresas = models.Empresa.objects.filter(gerente_id=request.user.pk, status=True).exclude(id__in=empresasFun.values_list('empresa_id', flat=True))
+    
+    servicosFun = models.ServicoFuncionario.objects.filter(funcionario_id=funcionario.pk)
+    servicos = models.Servico.objects.filter(empresa_id__in=empresas, status=True).exclude(id__in=servicosFun.values_list('servico_id', flat=True))
+
+    return render(request, 'agenda/update-funcionario.html',{
+        'empresas': empresas,
+        'empresasFun': empresasFun,
+        'dias': dias,
+        'diasFun': diasFun,
+        'funcionario': funcionario,
+        'diasFunHora': diasFunHora,
+        'servicos': servicos,
+        'servicosFun': servicosFun})
+    
 def deletarFuncionario(request):
     if request.method == 'POST':
         idServico = request.POST['idServico'] 
