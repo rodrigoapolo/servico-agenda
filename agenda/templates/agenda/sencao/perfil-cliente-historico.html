@@ -1,3 +1,4 @@
+{% load tz %}
 <div class="container h-100 d-flex bg-white">
     <div class="w-50 p-5">
         <h2>Serviço Marcado</h2>
@@ -13,8 +14,8 @@
                                 <h5 class="card-title">{{ agenda.servico.nome }}</h5>
                                 <p class="card-text">{{ agenda.servico.descricao }}</p>
                                 <p class="card-text"><small class="text-body-secondary"> {{ agenda.funcionario.username}} </small></p>
-                                <p class="card-text"><small class="text-body-secondary">{{ agenda.data_inicio|date:"l, d F Y" }} ás {{ agenda.data_inicio|time:"H:i" }} 
-                                    as {{ agenda.data_final|time:"H:i" }}</small>
+                                <p class="card-text"><small class="text-body-secondary">{{ agenda.data_inicio|date:"l, d F Y"  }} ás {{ agenda.data_inicio|timezone:"UTC"|time:"H:i" }} 
+                                    as {{ agenda.data_final|timezone:"UTC"|time:"H:i" }}</small>
                                 </p>
                                 <form class="pe-2" action="{% url 'agenda:cancelarAgendamento' %}" method="POST">
                                     {% csrf_token %}
@@ -33,7 +34,13 @@
     </div>
 
     <div class="w-50 p-5">
+        <div class="d-flex justify-content-between">
         <h2>Serviço Programado</h2>
+        <form action="{% url 'agenda:gerarAgendamentoProgramado' %}" method="GET">
+            {% csrf_token %}
+                <button type="submit" class="btn btn-primary">Agendar</button>        
+        </form>
+    </div>
         {% if agendaProgramada %}
         {% for agenda in agendaProgramada %}
             <div class="card mb-3" style="max-width: 540px;">
@@ -46,8 +53,8 @@
                             <h5 class="card-title">{{ agenda.servico.nome }}</h5>
                             <p class="card-text">{{ agenda.servico.descricao }}</p>
                             <p class="card-text"><small class="text-body-secondary"> {{ agenda.funcionario.username}} </small></p>
-                            <p class="card-text"><small class="text-body-secondary">{{ agenda.data_inicio|date:"l, d F Y" }} ás {{ agenda.data_inicio|time:"H:i" }} 
-                                as {{ agenda.data_final|time:"H:i" }}</small>
+                            <p class="card-text"><small class="text-body-secondary">{{ agenda.data_inicio|date:"l, d F Y" }} ás {{ agenda.data_inicio|timezone:"UTC"|time:"H:i" }} 
+                                as {{ agenda.data_final|timezone:"UTC"|time:"H:i" }}</small>
                             </p>
                             <form class="pe-2" action="{% url 'agenda:cancelarAgendamento' %}" method="POST">
                                 {% csrf_token %}

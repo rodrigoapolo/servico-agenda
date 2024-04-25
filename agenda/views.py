@@ -8,6 +8,7 @@ from datetime import datetime, timedelta
 from agenda.util import encontrar_menor_maior_hora, dividir_horarios, filtrar_horarios_nao_ocupados
 from agenda import models
 from django.urls import resolve
+from django.utils import timezone
 
 def index(request):
     return render(request, 'agenda/index.html')
@@ -23,7 +24,7 @@ def login_in(request):
             if user is not None:
                 login(request, user)
                 request.session['id_empresa'] = request.POST['codigo'] 
-                print(request.POST['codigo'])
+                request.session['statusAgenda'] = 'M'
                 print(request.session['id_empresa'])
                 # print(user.pk)
                 # print(user.tipo)
@@ -189,9 +190,13 @@ def deletarFuncionario(request):
 @login_required(login_url='agenda:login')
 def perfil(request):
     
-    agendaHistorico = models.Agenda.objects.filter(cliente_id=request.user.pk, status='E')[:3]
-    agendaMarcada = models.Agenda.objects.filter(cliente_id=request.user.pk, status='M')[:4]
-    agendaProgramada = models.Agenda.objects.filter(cliente_id=request.user.pk, status='P')[:4]
+    if request.user.tipo == 'F':
+        agendaHistorico = models.Agenda.objects.filter(funcionario=request.user.pk, servico__empresa__pk= request.session['id_empresa'], status='E')[:3]
+    else:
+        agendaHistorico = models.Agenda.objects.filter(cliente_id=request.user.pk, servico__empresa__pk= request.session['id_empresa'], status='E')[:3]
+        
+    agendaMarcada = models.Agenda.objects.filter(cliente_id=request.user.pk, servico__empresa__pk= request.session['id_empresa'], status='M')[:4]
+    agendaProgramada = models.Agenda.objects.filter(cliente_id=request.user.pk, servico__empresa__pk= request.session['id_empresa'], status='P')[:4]
     
     if request.method == 'POST':
         print(request.POST)
@@ -361,7 +366,7 @@ def agenda(request):
         
         lista_agendamentos = []
         for funcionario in lista_funcionarios:
-            lista_agendamentos.append((funcionario.pk, bucas_agendamentos(funcionario.pk, data, id_servico)))
+            lista_agendamentos.append((funcionario.pk, bucas_agendamentos(funcionario.pk, data, id_servico,request.session['statusAgenda'])))
         
         return render(request, 'agenda/agenda.html', {
             'servico': servico,
@@ -372,7 +377,7 @@ def agenda(request):
     return redirect('agenda:home')
 
 
-def bucas_agendamentos(funcionario, data, id_servico):
+def bucas_agendamentos(funcionario, data, id_servico, status):
     # Obtenha os horários de trabalho do funcionário
     horarios_trabalho = models.DiaSemanaFuncionario.objects.filter(
         funcionario=funcionario,
@@ -393,8 +398,11 @@ def bucas_agendamentos(funcionario, data, id_servico):
     hora_inicial = datetime.combine(data.date(), menor_hora)
     hora_final = datetime.combine(data.date(), maior_hora)
     horarios_divididos = dividir_horarios(hora_inicial, hora_final, tempo_servico)
-    horarios_divididos_nao_ocupados = filtrar_horarios_nao_ocupados(horarios_divididos, agendamentos)
-
+    if status == 'M':
+        horarios_divididos_nao_ocupados = filtrar_horarios_nao_ocupados(horarios_divididos, agendamentos)
+    else:
+        horarios_divididos_nao_ocupados = horarios_divididos
+        
     return horarios_divididos_nao_ocupados
 
 @login_required(login_url='agenda:login')
@@ -405,6 +413,7 @@ def gerarAgendamento(request):
         hora_final = request.POST['hora_final'].strip()
         idFuncionario = request.POST['idFuncionario'] 
         idServico = request.POST['idServico']
+        status = request.session['statusAgenda']
       
         hora_inicio = datetime.strptime(data + ' ' + hora_inicio+ ':' + '00 +0000', '%Y-%m-%d %H:%M:%S %z')
         hora_final = datetime.strptime(data + ' ' + hora_final+ ':' + '00 +0000', '%Y-%m-%d %H:%M:%S %z')
@@ -412,19 +421,56 @@ def gerarAgendamento(request):
         models.Agenda(
             data_inicio=hora_inicio,
             data_final=hora_final,
-            status='M',
+            status=status,
             cliente_id=request.user.pk,
             funcionario_id=idFuncionario,
             servico_id=idServico
         ).save()
         
+        request.session['statusAgenda'] = 'M'
     return redirect('agenda:perfil')
+
+def gerarAgendamentoProgramado(request):
+    request.session['statusAgenda'] = 'P'
+    return redirect('agenda:home')
 
 def cancelarAgendamento(request):
     if request.method == 'POST':
         idAgenda = request.POST['idAgenda']
-        models.Agenda.objects.filter(pk=idAgenda).update(status='C')
-
+        agenda = models.Agenda.objects.get(pk=idAgenda)
+        agenda.status = 'C'
+        agenda.save()
+        
+        agendas = models.Agenda.objects.filter(
+        data_inicio__date=agenda.data_inicio,
+        data_inicio__gte=agenda.data_inicio,
+        data_final__lte=agenda.data_final,
+        status='P',
+        funcionario_id=agenda.funcionario.pk).first()
+        
+        if agendas is not None:
+            agendas.status = 'M'
+            agendas.save()
+        
+        
     if request.POST['path'] == '/perfil/':
         return redirect('agenda:perfil')
-   
+
+    if request.POST['path'] == '/agendamento/':
+        return redirect('agenda:agendamento')
+
+def agendamento(request):
+    if request.method == 'POST':
+        idAgenda = request.POST['id_agenda']
+        models.Agenda.objects.filter(pk=idAgenda).update(status='E')
+        return redirect('agenda:agendamento')
+    
+    
+    if request.GET.get('data', None) is None:
+        data_hoje = datetime.now().date()
+        agendas = models.Agenda.objects.filter(funcionario_id=request.user.pk, servico__empresa__pk= request.session['id_empresa'], status='M', data_inicio__date=data_hoje)
+        return render(request, 'agenda/agendamento.html',{'agendas': agendas, 'data': data_hoje})
+    else:
+        data_hoje = request.GET.get('data', None)
+        agendas = models.Agenda.objects.filter(funcionario_id=request.user.pk, servico__empresa__pk= request.session['id_empresa'], status='M', data_inicio__date=data_hoje)        
+        return render(request, 'agenda/agendamento.html',{'agendas': agendas, 'data': data_hoje})

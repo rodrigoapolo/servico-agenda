@@ -54,7 +54,10 @@
     // Formatando a data atual como 'YYYY-MM-DD'
     var dataFormatada = dataAtual.toISOString().split('T')[0];
 
+    var elementosData = document.querySelectorAll('#data');
     // Definir o atributo 'min' com a data formatada
-    document.getElementById('data').setAttribute('min', dataFormatada);
+    elementosData.forEach(function(elemento) {
+    elemento.setAttribute('min', dataFormatada);
+});
 </script>
 {% endblock 'conteudo' %}
