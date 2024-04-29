@@ -15,7 +15,7 @@
 
         <h1 class="text-center pt-2">{{ user.username }}</h1>
         <div class="d-flex justify-content-center pt-3">
-            <form class="w-50 p-5" action="{% url 'agenda:perfil' %}" method="POST">
+            <form class="w-50 ps-5" action="{% url 'agenda:perfil' %}" method="POST">
                 {% csrf_token %}
 
                 <!-- Email input -->
@@ -89,38 +89,141 @@
                 </div>
 
             </form>
-            <div class="w-50 p-5">
-                <h2>Historico Serviço</h2>
-                {% if agendaHistorico %}
-                    {% for agenda in agendaHistorico %}
-                        <div class="card mb-3" style="max-width: 540px;">
-                            <div class="row g-0">
-                                <div class="col-md-4 d-flex justify-content-center">
-                                    <img src="{{ agenda.servico.foto.url }}" class="img-fluid" alt="...">
-                                </div>
-                                <div class="col-md-8">
-                                    <div class="card-body">
-                                        <h5 class="card-title">{{ agenda.servico.nome }}</h5>
-                                        <p class="card-text">{{ agenda.servico.descricao }}</p>
-                                        <p class="card-text"><small class="text-body-secondary"> {{ agenda.funcionario.username}} </small></p>
-                                        <p class="card-text"><small class="text-body-secondary">{{ agenda.data_inicio|date:"l, d F Y" }} ás {{ agenda.data_inicio|timezone:"UTC"|time:"H:i" }} 
-                                            as {{ agenda.data_final|time:"H:i" }}</small>
-                                        </p>
+            <div class="w-55">
+                {% if user.tipo == 'G' %}
+                    {% if countServicoRealizadoFunc %}
+                        <div id="myChart"></div>
+                    {% endif %}
+                {% else %}  
+                    <h2>Historico Serviço</h2>
+                    {% if agendaHistorico %}
+                        {% for agenda in agendaHistorico %}
+                            <div class="card mb-3" style="max-width: 540px;">
+                                <div class="row g-0">
+                                    <div class="col-md-4 d-flex justify-content-center">
+                                        <img src="{{ agenda.servico.foto.url }}" class="img-fluid" alt="...">
+                                    </div>
+                                    <div class="col-md-8">
+                                        <div class="card-body">
+                                            <h5 class="card-title">{{ agenda.servico.nome }}</h5>
+                                            <p class="card-text">{{ agenda.servico.descricao }}</p>
+                                            <p class="card-text"><small class="text-body-secondary"> {{ agenda.funcionario.username}} </small></p>
+                                            <p class="card-text"><small class="text-body-secondary">{{ agenda.data_inicio|date:"l, d F Y" }} ás {{ agenda.data_inicio|timezone:"UTC"|time:"H:i" }} 
+                                                as {{ agenda.data_final|time:"H:i" }}</small>
+                                            </p>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                    {% endfor %}      
+                        {% endfor %}      
 
+                    {% endif %}
                 {% endif %}
+
+
             </div>
         </div>
     </div>
 
+    {% if user.tipo == 'G' %}
+        {% if countServicoRealizadoMes %}
+        <div class="container h-100 d-flex bg-white">
+            <div class="w-40 ">
+                <div id="pie"></div>
+            </div>
+            <div class="w-40">
+                <div id="servicaoCancelados"></div>
+            </div>
+        </div>  
+        {% endif %}
+    {% endif %}
     {% if user.tipo == 'C' %}
         {% include 'agenda/sencao/perfil-cliente-historico.html' %}
     {% else %}
     {% endif %}
 </section>
+<script src="https://www.gstatic.com/charts/loader.js"></script>
+<script type="text/javascript">
+    google.charts.load('current',{packages:['corechart']});
+    google.charts.setOnLoadCallback(drawChart);
+    google.charts.setOnLoadCallback(pie);
+    google.charts.setOnLoadCallback(servicaoCancelados);
+    
+    function drawChart() {
 
+        // Set Data
+        const data = google.visualization.arrayToDataTable([
+          ['Funcionario', 'Serviços'],
+          {% for agenda in countServicoRealizadoFunc %}
+            ['{{ agenda.funcionario }}', {{ agenda.quantidade }}],
+          {% endfor %}
+        ]);
+        
+        // Set Options
+        const options = {
+            title: 'Quantidade de Serviços Realizados por Funcionario no Mês',
+            is3D: true,
+            width: 800, // Defina a largura do gráfico
+            height: 600
+        };
+        
+        // Draw
+        const chart = new google.visualization.ColumnChart(document.getElementById('myChart'));
+        chart.draw(data, options);
+        
+    }
+
+
+    function randomColor() {
+        return '#' + Math.floor(Math.random()*16777215).toString(16);
+    }
+         
+    function pie() {
+
+        // Set Data
+        const data = google.visualization.arrayToDataTable([
+          ['Serviços', 'Quantidade'],
+          {% for serv in countServicoRealizadoMes %}
+            ['{{ serv.servico }}', {{ serv.quantidade }}],
+          {% endfor %}
+        ]);
+        
+        // Set Options
+        const options = {
+            title: 'Quantidade de Serviços Realizados no Mês',
+            is3D: true,
+            width: 600, // Defina a largura do gráfico
+            height: 500
+        };
+        
+        // Draw
+        const chart = new google.visualization.PieChart(document.getElementById('pie'));
+        chart.draw(data, options);
+        
+    }
+
+    function servicaoCancelados() {
+
+        // Set Data
+        const data = google.visualization.arrayToDataTable([
+          ['Serviços', 'Quantidade'],
+          {% for serv in countServicoCanceladosMes %}
+            ['{{ serv.servico }}', {{ serv.quantidade }}],
+          {% endfor %}
+        ]);
+        
+        // Set Options
+        const options = {
+            title: 'Quantidade de Serviços Cancelados no Mês',
+            is3D: true,
+            width: 600, // Defina a largura do gráfico
+            height: 500
+        };
+        
+        // Draw
+        const chart = new google.visualization.PieChart(document.getElementById('servicaoCancelados'));
+        chart.draw(data, options);
+        
+    }
+</script>
 {% endblock 'conteudo' %}

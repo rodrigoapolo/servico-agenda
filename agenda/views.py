@@ -9,6 +9,7 @@ from agenda.util import encontrar_menor_maior_hora, dividir_horarios, filtrar_ho
 from agenda import models
 from django.urls import resolve
 from django.utils import timezone
+import datetime
 
 def index(request):
     return render(request, 'agenda/index.html')
@@ -198,6 +199,59 @@ def perfil(request):
     agendaMarcada = models.Agenda.objects.filter(cliente_id=request.user.pk, servico__empresa__pk= request.session['id_empresa'], status='M')[:4]
     agendaProgramada = models.Agenda.objects.filter(cliente_id=request.user.pk, servico__empresa__pk= request.session['id_empresa'], status='P')[:4]
     
+
+    primeiro_dia_mes_atual = timezone.now().replace(day=1, hour=0, minute=0, second=0, microsecond=0)
+    primeiro_dia_proximo_mes = (primeiro_dia_mes_atual + datetime.timedelta(days=32)).replace(day=1)
+    servicoRealizadoFunc = models.Agenda.objects.filter(
+        data_inicio__gte=primeiro_dia_mes_atual,
+        data_inicio__lt=primeiro_dia_proximo_mes,
+        status='E',
+        servico__empresa__pk= request.session['id_empresa'])
+    
+    func = servicoRealizadoFunc.values_list('funcionario', flat=True).distinct()
+    countServicoRealizadoFunc = []
+    for fu in func:
+        countServicoRealizadoFunc.append(
+            {
+                'funcionario': (servicoRealizadoFunc.filter(funcionario__pk=fu).values_list('funcionario__username', flat=True).first()),
+                'quantidade': (servicoRealizadoFunc.filter(funcionario__pk=fu).count())
+            }
+        )
+        
+    servicoRealizadoMes = models.Agenda.objects.filter(
+    data_inicio__gte=primeiro_dia_mes_atual,
+    data_inicio__lt=primeiro_dia_proximo_mes,
+    status='E',
+    servico__empresa__pk= request.session['id_empresa'])
+    servicos = servicoRealizadoMes.values_list('servico', flat=True).distinct()
+    countServicoRealizadoMes = []
+    for serv in servicos:
+        countServicoRealizadoMes.append(
+            {
+                'servico': (servicoRealizadoMes.filter(servico__pk=serv).values_list('servico__nome', flat=True).first()),
+                'quantidade': (servicoRealizadoMes.filter(servico__pk=serv).count())
+            }
+        )
+        
+    servicoCanceladoMes = models.Agenda.objects.filter(
+    data_inicio__gte=primeiro_dia_mes_atual,
+    data_inicio__lt=primeiro_dia_proximo_mes,
+    status='C',
+    servico__empresa__pk= request.session['id_empresa'])
+    servicosCancelados = servicoCanceladoMes.values_list('servico', flat=True).distinct()
+    countServicoCanceladosMes = []
+    for serv in servicosCancelados:
+        countServicoCanceladosMes.append(
+            {
+                'servico': (servicoCanceladoMes.filter(servico__pk=serv).values_list('servico__nome', flat=True).first()),
+                'quantidade': (servicoCanceladoMes.filter(servico__pk=serv).count())
+            }
+        )
+    print('='*50)
+    print(servicosCancelados)
+    print(countServicoCanceladosMes)
+    print('='*50)
+        
     if request.method == 'POST':
         print(request.POST)
         username = request.POST['username'] 
@@ -229,14 +283,20 @@ def perfil(request):
             'user': request.user,
             'agendaHistorico': agendaHistorico,
             'agendaMarcada': agendaMarcada,
-            'agendaProgramada': agendaProgramada})
+            'agendaProgramada': agendaProgramada,
+            'countServicoRealizadoFunc': countServicoRealizadoFunc,
+            'countServicoRealizadoMes': countServicoRealizadoMes,
+            'countServicoCanceladosMes': countServicoCanceladosMes})
                     
     else:
         return render(request, 'agenda/perfil.html', {
             'user': request.user,
             'agendaHistorico': agendaHistorico,
             'agendaMarcada': agendaMarcada,
-            'agendaProgramada': agendaProgramada})
+            'agendaProgramada': agendaProgramada,
+            'countServicoRealizadoFunc': countServicoRealizadoFunc,
+            'countServicoRealizadoMes': countServicoRealizadoMes,
+            'countServicoCanceladosMes': countServicoCanceladosMes})
     
     
 @login_required(login_url='agenda:login')
@@ -440,7 +500,9 @@ def cancelarAgendamento(request):
         agenda = models.Agenda.objects.get(pk=idAgenda)
         agenda.status = 'C'
         agenda.save()
+                
         
+    if request.POST['path'] == '/perfil/':
         agendas = models.Agenda.objects.filter(
         data_inicio__date=agenda.data_inicio,
         data_inicio__gte=agenda.data_inicio,
@@ -451,9 +513,7 @@ def cancelarAgendamento(request):
         if agendas is not None:
             agendas.status = 'M'
             agendas.save()
-        
-        
-    if request.POST['path'] == '/perfil/':
+            
         return redirect('agenda:perfil')
 
     if request.POST['path'] == '/agendamento/':
