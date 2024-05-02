@@ -1,3 +1,4 @@
+from cgi import print_arguments
 from turtle import mode
 from django.shortcuts import render, redirect
 from django.contrib.auth.forms import AuthenticationForm
@@ -9,7 +10,9 @@ from agenda.util import encontrar_menor_maior_hora, dividir_horarios, filtrar_ho
 from agenda import models
 from django.urls import resolve
 from django.utils import timezone
-import datetime
+from django.core.mail import send_mail
+
+
 
 def index(request):
     return render(request, 'agenda/index.html')
@@ -201,7 +204,7 @@ def perfil(request):
     
 
     primeiro_dia_mes_atual = timezone.now().replace(day=1, hour=0, minute=0, second=0, microsecond=0)
-    primeiro_dia_proximo_mes = (primeiro_dia_mes_atual + datetime.timedelta(days=32)).replace(day=1)
+    primeiro_dia_proximo_mes = (primeiro_dia_mes_atual + timedelta(days=32)).replace(day=1)
     servicoRealizadoFunc = models.Agenda.objects.filter(
         data_inicio__gte=primeiro_dia_mes_atual,
         data_inicio__lt=primeiro_dia_proximo_mes,
@@ -513,6 +516,14 @@ def cancelarAgendamento(request):
         if agendas is not None:
             agendas.status = 'M'
             agendas.save()
+            
+            assunto = 'Serviço Programado Agendado'
+            mensagem = request.user.username+', você tem um novo serviço programado agendado. Confira em sua agenda.'
+            remetente = 'gogaragedev@gmail.com'
+            destinatario = []
+            destinatario.append(request.user.email)
+    
+            send_mail(assunto, mensagem, remetente, destinatario)
             
         return redirect('agenda:perfil')
 
