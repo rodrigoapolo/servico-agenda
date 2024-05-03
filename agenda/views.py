@@ -30,8 +30,10 @@ def login_in(request):
                 request.session['id_empresa'] = request.POST['codigo'] 
                 request.session['statusAgenda'] = 'M'
                 print(request.session['id_empresa'])
-                # print(user.pk)
-                # print(user.tipo)
+
+                if user.tipo == 'C':
+                    return redirect('agenda:home')
+                
                 return redirect('agenda:perfil')
     else:
         form = AuthenticationForm()
@@ -453,6 +455,7 @@ def bucas_agendamentos(funcionario, data, id_servico, status):
     # Obtenha os agendamentos do funcionário para o dia especificado
     agendamentos = models.Agenda.objects.filter(
         funcionario=funcionario,
+        status='M',
         data_inicio__date=data.date()
     ).values_list('data_inicio', 'data_final')
 
@@ -518,10 +521,10 @@ def cancelarAgendamento(request):
             agendas.save()
             
             assunto = 'Serviço Programado Agendado'
-            mensagem = request.user.username+', você tem um novo serviço programado agendado. Confira em sua agenda.'
+            mensagem = agenda.cliente.username+', você tem um novo serviço programado agendado. Confira em sua agenda.'
             remetente = 'gogaragedev@gmail.com'
             destinatario = []
-            destinatario.append(request.user.email)
+            destinatario.append(agenda.cliente.email)
     
             send_mail(assunto, mensagem, remetente, destinatario)
             

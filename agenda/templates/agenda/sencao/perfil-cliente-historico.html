@@ -35,10 +35,10 @@
 
     <div class="w-50 p-5">
         <div class="d-flex justify-content-between">
-        <h2>Serviço Programado</h2>
+        <h2>Solicitação de Encaixe</h2>
         <form action="{% url 'agenda:gerarAgendamentoProgramado' %}" method="GET">
             {% csrf_token %}
-                <button type="submit" class="btn btn-primary">Agendar</button>        
+                <button type="submit" class="btn btn-primary">Solicitar</button>        
         </form>
     </div>
         {% if agendaProgramada %}
