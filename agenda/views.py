@@ -28,9 +28,9 @@ def login_in(request):
             print(user)
             if user is not None:
                 login(request, user)
-                request.session['id_empresa'] = request.POST['codigo'] 
+                request.session['id_empresa'] = 11
                 request.session['statusAgenda'] = 'M'
-                print(request.session['id_empresa'])
+                request.session['id_cidade'] = request.POST['idCidade'] 
 
                 if user.tipo == 'C':
                     return redirect('agenda:home')
@@ -42,12 +42,6 @@ def login_in(request):
     cidades = models.Cidade.objects.all()
     return render(request, 'agenda/login.html', {'form': form, 'cidades': cidades})
 
-def listaEmpresa(request):
-    cidade = request.GET['idCidade']
-    empresas = models.Empresa.objects.filter(cidade_id=cidade, status=True)
-    return render(request, 'agenda/lista-empresas.html', {'empresas': empresas})
-
-
 
 def logout_view(request):
     auth.logout(request)
@@ -55,10 +49,11 @@ def logout_view(request):
 
 @login_required(login_url='agenda:login')
 def home(request):
-    empresa = models.Empresa.objects.get(pk=request.session['id_empresa'])
+    empresa = models.Empresa.objects.get(pk=request.session['id_empresa'], cidade_id=request.session['id_cidade'])
     empresas = models.Empresa.objects.filter(gerente_id=empresa.gerente_id, status=True)
 
     return render(request, 'agenda/home.html',{'empresas': empresas})
+
 
 
 def create_cliente(request):

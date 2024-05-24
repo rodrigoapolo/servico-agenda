@@ -4,13 +4,13 @@
 <link href="{% static 'agenda/css/login.css' %}" rel="stylesheet">
 {% endblock 'head' %}
 
-{% block 'titulo' %}Minha Empresa{% endblock 'titulo' %}
+{% block 'titulo' %}Minha Unidade{% endblock 'titulo' %}
 
 {% block 'conteudo' %}
 {% include 'global/menu.html' %}
 <section class="p-0 bg-secondary-subtle">
     <div class="container pb-3 h-100 bg-white">
-        <h1 class="text-center pt-2">Cadastra Empresa</h1>
+        <h1 class="text-center pt-2">Cadastra Unidade</h1>
         <form action="{% url 'agenda:empresa' %}" method="POST" class="row g-3 w-50 m-auto p-3 shadow" enctype="multipart/form-data">
             {% csrf_token %}
             <div class="col-md-6">
@@ -70,7 +70,7 @@
         </form>
     </div>
     <div class="container pt-4 h-100 bg-white">
-        <h1 class="ms-3">Minhas Empresas</h1>
+        <h1 class="ms-3">Minhas Unidade</h1>
         <div class="d-flex justify-content-center flex-wrap">
             {% if empresas %}
                 {% for empresa in empresas %}
