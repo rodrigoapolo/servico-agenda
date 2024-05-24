@@ -37,7 +37,16 @@ def login_in(request):
                 return redirect('agenda:perfil')
     else:
         form = AuthenticationForm()
-    return render(request, 'agenda/login.html', {'form': form})
+        
+    cidades = models.Cidade.objects.all()
+    return render(request, 'agenda/login.html', {'form': form, 'cidades': cidades})
+
+def listaEmpresa(request):
+    cidade = request.GET['idCidade']
+    empresas = models.Empresa.objects.filter(cidade_id=cidade, status=True)
+    return render(request, 'agenda/lista-empresas.html', {'empresas': empresas})
+
+
 
 def logout_view(request):
     auth.logout(request)

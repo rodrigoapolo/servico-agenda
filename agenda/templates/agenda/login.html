@@ -20,11 +20,20 @@
         <form action="{% url 'agenda:login' %}" method="POST">
           {% csrf_token %}
           <div class="form-outline mb-4">
-            <label for="email">Codigo da Empresa</label>
-            <input type="text" class="form-control form-control-lg shadow p-4 mb-2 bg-white rounded"
-              name="codigo" id="codigo" placeholder="Codigo" required>
-
+            <label for="idCidade">Cidade</label>
+            <select class="form-control form-control-lg shadow p-4 mb-2 bg-white rounded" id="idCidade" name="idCidade" required>
+              <option disabled selected>Selecione uma Cidade</option>
+              {% for cidade in cidades %}
+                <option value="{{ cidade.pk }}">{{ cidade.nome }}</option>
+              {% endfor %}
+          </select>
           </div>
+          <div id="divEmpresa" class="form-outline mb-4">
+            <label for="empresas">Empresa</label>
+            <select class="form-control form-control-lg shadow p-4 mb-2 bg-white rounded" id="empresas" name="empresas" required>
+              <option disabled selected>Selecione a Empresa</option>
+            </select>
+        </div>
           <!-- Email input -->
           <div class="form-outline mb-4">
             <label for="email">Email</label>
@@ -82,5 +91,25 @@
   </div>
 
 </section>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+  $(document).ready(function() {
+    $('#idCidade').change(function() {
+  
+        var cidadeId = $('#idCidade').val(); // Obtém o valor do campo de cidade
+        console.log(cidadeId);
+        $.ajax({
+            type: 'GET',
+            url: '/lista-empresa/', // URL da view listaEmpresa
+            data: {
+                'idCidade': cidadeId
+            },
+            success: function(response) {
+                $('#divEmpresa').html(response); // Atualiza o conteúdo do div com a resposta da requisição
+            }
+        });
+    });
+  });
+</script>
 
 {% endblock 'conteudo' %}

@@ -23,4 +23,5 @@ urlpatterns = [
     path('deletar-servico/', views.deletarServico, name='deletarServico'),
     path('deletar-empresa/', views.deletarEmpresa, name='deletarEmpresa'),
     path('deletar-funcionario/', views.deletarFuncionario, name='deletarFuncionario'),
+    path('lista-empresa/', views.listaEmpresa, name='listaEmpresa'),
 ]

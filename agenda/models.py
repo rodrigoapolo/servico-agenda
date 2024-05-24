@@ -25,6 +25,10 @@ class DiaSemanaFuncionario(models.Model):
     dia = models.ForeignKey(Dia, on_delete=models.SET_NULL, blank=True, null=True)
     funcionario = models.ForeignKey(User, on_delete=models.SET_NULL, blank=True, null=True)
     
+class Cidade(models.Model):
+    id = models.AutoField(primary_key=True)
+    nome = models.CharField(max_length=200, blank=True, null=True)
+
 class Empresa(models.Model):
     id = models.AutoField(primary_key=True)
     nome = models.CharField(max_length=200, blank=True, null=True)
@@ -36,6 +40,7 @@ class Empresa(models.Model):
     complemento = models.CharField(max_length=200, blank=True, null=True)
     status = models.BooleanField(default=True)
     gerente = models.ForeignKey(User, on_delete=models.SET_NULL, blank=True, null=True)
+    cidade = models.ForeignKey(Cidade, on_delete=models.SET_NULL, blank=True, null=True)
             
 class Servico(models.Model):
     id = models.AutoField(primary_key=True)

@@ -1,0 +1,7 @@
+<label>Empresa</label>
+<select class="form-control form-control-lg shadow p-4 mb-2 bg-white rounded" id="codigo" name="codigo" required>
+    <option disabled selected>Selecione a Empresa</option>
+    {% for empresa in empresas %}
+        <option value="{{ empresa.pk }}">{{ empresa.nome }}</option>
+    {% endfor %}  
+</select>
