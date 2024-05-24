@@ -25,6 +25,25 @@
                 <label for="logradouro" class="form-label">Logradouro</label>
                 <input type="text" class="form-control" id="logradouro" name="logradouro" placeholder="Logradouro" value="{{ empresaupdate.logradouro }}" required>
             </div>
+            <div class="col-md-12">
+                <label for="cidade" class="form-label">Cidade</label>
+                <select class="form-select" name="idCidade" id="idCidade" aria-label="Default select example">
+                    {% if empresaupdate %}
+                        <option selected value="{{ empresaupdate.cidade.pk }}">{{ empresaupdate.cidade.nome }}</option>
+                    {% else %}
+                        <option disabled selected>Selecione um Empresa</option>
+                    {% endif %}
+
+                    
+                    {% if cidades %}
+                        {% for cidade in cidades %}
+                            {% if cidade.pk != empresaupdate.cidade.pk %}
+                                <option value="{{ cidade.pk }}">{{ cidade.nome }}</option>
+                            {% endif %}
+                        {% endfor %}     
+                    {% endif %}
+            </select>
+            </div>
             <div class="col-6">
                 <label for="numero" class="form-label">Numero</label>
                 <input type="text" class="form-control" id="numero" name="numero" placeholder="Numero" value="{{ empresaupdate.numero }}" required>

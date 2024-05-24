@@ -1,3 +1,4 @@
+from calendar import c
 from cgi import print_arguments
 from turtle import mode
 from django.shortcuts import render, redirect
@@ -326,6 +327,7 @@ def empresa(request):
         descricao = request.POST['descricao']
         complemento = request.POST['complemento']
         logradouro = request.POST['logradouro']
+        cidade = request.POST['idCidade']
         foto = request.FILES['foto']  
         
         if request.POST.get('id_empresaupdate', None) is "":
@@ -337,6 +339,7 @@ def empresa(request):
                 numero=numero,
                 complemento=complemento,
                 foto=foto,
+                cidade_id=cidade,
                 gerente_id=request.user.pk
             )
         else:
@@ -350,12 +353,13 @@ def empresa(request):
                 'numero':numero,
                 'complemento':complemento,
                 'foto':foto,
+                'cidade_id':cidade,
                 'gerente_id':request.user.pk}
             )
         
-    
+    cidades = models.Cidade.objects.all()
     empresas = models.Empresa.objects.filter(gerente_id=request.user.pk, status=True)
-    return render(request, 'agenda/empresa.html', {'empresas': empresas, 'empresaupdate': empresaupdate})
+    return render(request, 'agenda/empresa.html', {'empresas': empresas, 'empresaupdate': empresaupdate, 'cidades': cidades})
     
 def deletarEmpresa(request):
     if request.method == 'POST':
