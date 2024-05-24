@@ -322,7 +322,10 @@ def empresa(request):
         descricao = request.POST['descricao']
         complemento = request.POST['complemento']
         logradouro = request.POST['logradouro']
-        cidade = request.POST['idCidade']
+        cidade, _ = models.Cidade.objects.update_or_create(
+                nome=request.POST['idCidade'],
+                defaults={
+                'nome':request.POST['idCidade'],})
         foto = request.FILES['foto']  
         
         if request.POST.get('id_empresaupdate', None) is "":
@@ -334,7 +337,7 @@ def empresa(request):
                 numero=numero,
                 complemento=complemento,
                 foto=foto,
-                cidade_id=cidade,
+                cidade=cidade,
                 gerente_id=request.user.pk
             )
         else:
@@ -348,7 +351,7 @@ def empresa(request):
                 'numero':numero,
                 'complemento':complemento,
                 'foto':foto,
-                'cidade_id':cidade,
+                'cidade':cidade,
                 'gerente_id':request.user.pk}
             )
         

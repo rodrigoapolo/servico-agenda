@@ -26,23 +26,15 @@
                 <input type="text" class="form-control" id="logradouro" name="logradouro" placeholder="Logradouro" value="{{ empresaupdate.logradouro }}" required>
             </div>
             <div class="col-md-12">
-                <label for="cidade" class="form-label">Cidade</label>
-                <select class="form-select" name="idCidade" id="idCidade" aria-label="Default select example">
-                    {% if empresaupdate %}
-                        <option selected value="{{ empresaupdate.cidade.pk }}">{{ empresaupdate.cidade.nome }}</option>
-                    {% else %}
-                        <option disabled selected>Selecione um Empresa</option>
-                    {% endif %}
-
-                    
+                <label for="idCidade" class="form-label">Cidade</label>
+                <input list="listaCidades" id="idCidade" name="idCidade" value="{{ empresaupdate.cidade.nome  }}" />
+                    <datalist id="listaCidades">
                     {% if cidades %}
                         {% for cidade in cidades %}
-                            {% if cidade.pk != empresaupdate.cidade.pk %}
-                                <option value="{{ cidade.pk }}">{{ cidade.nome }}</option>
-                            {% endif %}
+                            <option value="{{ cidade.nome }}"></option>
                         {% endfor %}     
                     {% endif %}
-            </select>
+                </datalist>
             </div>
             <div class="col-6">
                 <label for="numero" class="form-label">Numero</label>
@@ -54,7 +46,7 @@
             </div>
             <div class="col-md-12">
                 <label for="descricao" class="form-label">Descrição</label>
-                <textarea class="form-control" id="descricao" name="descricao" rows="5"></textarea>
+                <textarea class="form-control" id="descricao" name="descricao" rows="5">{{ empresaupdate.descricao }}</textarea>
             </div>
             <div class="col-md-12">
                 <div class="input-group mb-3">

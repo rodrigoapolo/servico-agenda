@@ -26,12 +26,12 @@
                 <input type="time" class="form-control" id="tempoServico" name="tempoServico"  value="{{ servicoupdate.tempoServico }}" placeholder="Tempo Serviço" required>
             </div>
             <div class="col-6">
-                <label for="empresa" class="form-label">Empresa</label>
+                <label for="empresa" class="form-label">Unidade</label>
                 <select class="form-select" name="idempresa" aria-label="Default select example">
                     {% if servicoupdate %}
                         <option selected value="{{ servicoupdate.empresa.pk }}">{{ servicoupdate.empresa.nome }}</option>
                     {% else %}
-                        <option disabled selected>Selecione um Empresa</option>
+                        <option disabled selected>Selecione um Unidade</option>
                     {% endif %}
 
                     
