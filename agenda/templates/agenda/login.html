@@ -21,7 +21,7 @@
           {% csrf_token %}
           <div class="form-outline mb-4">
             <label for="idCidade">Cidade</label>
-            <select class="form-control form-control-lg shadow p-4 mb-2 bg-white rounded" id="idCidade" name="idCidade" required>
+            <select class="form-control form-control-lg shadow p-4 mb-2 bg-white rounded" id="idCidade" name="idCidade" value="">
               <option disabled selected>Selecione uma Cidade</option>
               {% for cidade in cidades %}
                 <option value="{{ cidade.pk }}">{{ cidade.nome }}</option>

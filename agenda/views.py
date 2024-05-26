@@ -30,7 +30,8 @@ def login_in(request):
                 login(request, user)
                 request.session['id_empresa'] = 11
                 request.session['statusAgenda'] = 'M'
-                request.session['id_cidade'] = request.POST['idCidade'] 
+                if 'idCidade' in request.POST and request.POST['idCidade']:
+                    request.session['id_cidade'] = request.POST['idCidade'] 
 
                 if user.tipo == 'C':
                     return redirect('agenda:home')
@@ -49,8 +50,12 @@ def logout_view(request):
 
 @login_required(login_url='agenda:login')
 def home(request):
-    empresa = models.Empresa.objects.get(pk=request.session['id_empresa'], cidade_id=request.session['id_cidade'])
-    empresas = models.Empresa.objects.filter(gerente_id=empresa.gerente_id, status=True)
+    if 'id_cidade' in request.session and request.session['id_cidade']:
+        empresas = models.Empresa.objects.filter(gerente_id=3, cidade_id=request.session['id_cidade'])
+    else:
+        empresas = models.Empresa.objects.filter(gerente_id=3)
+        
+   
 
     return render(request, 'agenda/home.html',{'empresas': empresas})
 
