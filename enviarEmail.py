@@ -48,7 +48,7 @@ def enviarEmail(destinatario, assunto, corpo):
     mensagem = MIMEMultipart()
     mensagem['From'] = email
     mensagem['To'] = destinatario
-    mensagem['Subject'] = assunto
+    mensagem['Subject'] = "Venha novamente nos encontrar! Estamos te esperando para atendê-lo na Barbearia Tech!"
 
     # Adicionar o corpo do e-mail à mensagem
     mensagem.attach(MIMEText(corpo, 'plain'))
@@ -69,7 +69,8 @@ def enviarEmail(destinatario, assunto, corpo):
 
 
 for servicoCliente in servicoClientes:
-    message = f"Olá {servicoCliente[4]}! Não se esqueça de agendar novamente o serviço {servicoCliente[1]}, onde {servicoCliente[2]} \n\n\nEstamos ansiosos para vê-lo em breve!"
+    message = f"Prezado(a),{servicoCliente[4]}\nEspero que esta mensagem o(a) encontre bem."
+    "Há algum tempo, tivemos o prazer de prestar nossos serviços a você na Barbearia Tech e ficamos muito satisfeitos com a oportunidade de atendê-lo(a). Gostaríamos de lembrá-lo(a) sobre o serviço que realizamos para você e reforçar o quanto valorizamos sua confiança em nossa empresa. Seja para um corte de cabelo estiloso, uma barba impecável ou qualquer outro tratamento, estamos à disposição para ajudar. A Barbearia Tech é pioneira no mercado e oferece uma plataforma para atender às suas necessidades. Nossos profissionais qualificados estão prontos para proporcionar a melhor experiência possível. Se você deseja agendar um novo serviço ou simplesmente reviver a experiência incrível que tivemos anteriormente, não hesite em entrar em contato conosco. Estamos ansiosos para tê-lo(a) novamente como nosso cliente! Atenciosamente, Barbearia Tech"
     #munda o parametro de enviarEmail para o email do cliente servicoCliente[3]
     enviarEmail('rodrigoapolodev@gmail.com', servicoCliente[1], message)
 

@@ -25,7 +25,7 @@ def login_in(request):
             email = form.cleaned_data.get('username')
             password = form.cleaned_data.get('password')
             user = authenticate(email=email, password=password)
-            print(user)
+
             if user is not None:
                 login(request, user)
                 request.session['id_empresa'] = 11
@@ -40,7 +40,9 @@ def login_in(request):
     else:
         form = AuthenticationForm()
         
-    cidades = models.Cidade.objects.all()
+    cidadesEmpresa = models.Empresa.objects.filter(gerente_id=3).values_list('cidade', flat=True).distinct()
+
+    cidades = models.Cidade.objects.filter(pk__in=cidadesEmpresa)
     return render(request, 'agenda/login.html', {'form': form, 'cidades': cidades})
 
 
@@ -262,13 +264,8 @@ def perfil(request):
                 'quantidade': (servicoCanceladoMes.filter(servico__pk=serv).count())
             }
         )
-    print('='*50)
-    print(servicosCancelados)
-    print(countServicoCanceladosMes)
-    print('='*50)
         
     if request.method == 'POST':
-        print(request.POST)
         username = request.POST['username'] 
         email = request.POST['email']
         password = request.POST['password']
@@ -537,12 +534,13 @@ def cancelarAgendamento(request):
             agendas.save()
             
             assunto = 'Serviço Programado Agendado'
-            mensagem = agenda.cliente.username+', você tem um novo serviço programado agendado. Confira em sua agenda.'
+            mensagem = agendas.cliente.username+', você tem um novo serviço programado agendado. Confira em sua agenda.'
             remetente = 'gogaragedev@gmail.com'
             destinatario = []
-            destinatario.append(agenda.cliente.email)
+            destinatario.append(agendas.cliente.email)
     
             send_mail(assunto, mensagem, remetente, destinatario)
+
             
         return redirect('agenda:perfil')
 

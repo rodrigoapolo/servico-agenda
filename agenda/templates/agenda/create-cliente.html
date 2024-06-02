@@ -9,15 +9,14 @@
 {% block 'conteudo' %}
 
 <section class="vh-100">
-    <div class="container py-5 h-100 ">
-        <div class="row d-flex align-items-center justify-content-center h-100 bg-white">
+    <div class="container py-5">
+        <div class="row d-flex align-items-center justify-content-center h-100 bg-white rounded">
             <div class="col-md-8 col-lg-7 col-xl-6">
-                <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-login-form/draw2.svg"
-                    class="img-fluid" alt="Phone image">
+                <img src="{% static 'global/img/capa1.jpeg' %}"  class="img-fluid rounded" alt="Phone image">
             </div>
             <div class="col-md-7 col-lg-5 col-xl-5 offset-xl-1">
-                <h1 class="text-center" >Registra-se</h1>
-                <form action="{% url 'agenda:create_cliente' %}" method="POST">
+                <h1 class="text-center mt-3" >Registra-se</h1>
+                <form action="{% url 'agenda:create_cliente' %}" method="POST" class="py-5">
                     {% csrf_token %}
 
                     <div class="form-outline mb-4">
